@@ -14,9 +14,10 @@ class CreateRestaurantsTable extends Migration
             $table->string('main_image')->nullable();
             $table->text('review')->nullable();
             $table->text('location')->nullable();
-            $table->string('food_type')->nullable();
+            $table->decimal('cost', 8, 2)->nullable();
             $table->enum('status', ['pending', 'recommend'])->default('pending');
-       
+            $table->foreignId('food_id')->constrained('SpinerFood')->onDelete('cascade');
+
         });
     }
 

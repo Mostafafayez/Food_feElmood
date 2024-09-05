@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('abilities')->nullable();
             $table->timestamp('updated_at')->nullable();
             $table->timestamp('created_at')->nullable();
+            $table->timestamp('last_used_at')->nullable();
 
         });
     }

@@ -232,4 +232,50 @@ class RestaurantController extends Controller
         return response()->json(['data' => $recommendedRestaurants], 200);
     }
 
+
+
+
+    public function getByFoodId($food_id)
+    {
+        // Validate that the food_id is numeric (Optional)
+        if (!is_numeric($food_id)) {
+            return response()->json(['error' => 'Invalid food ID'], 400);
+        }
+
+
+        $restaurants = Restaurant::where('food_id', $food_id)->get();
+
+
+        if ($restaurants->isEmpty()) {
+            return response()->json(['message' => 'No restaurants found for this food type'], 404);
+        }
+
+        // Return the restaurants as a JSON response
+        return response()->json($restaurants, 200);
+    }
+
+
+
+    public function getRestaurantsSortedByPrice()
+    {
+        $restaurants = Restaurant::query()
+        ->leftJoin('visitor_actions', 'restaurants.id', '=', 'visitor_actions.restaurant_id')
+        ->select('restaurants.id', 'restaurants.name', 'restaurants.main_image', 'restaurants.review', 'restaurants.location', 'restaurants.status', 'restaurants.food_id', 'restaurants.cost')
+        ->selectRaw('COUNT(visitor_actions.id) as visitor_count') // Count the number of occurrences in visitor_actions
+        ->groupBy('restaurants.id', 'restaurants.name', 'restaurants.main_image', 'restaurants.review', 'restaurants.location', 'restaurants.status', 'restaurants.food_id', 'restaurants.cost') // Group by restaurant columns
+        ->orderBy('restaurants.cost', 'desc') // Sort by cost (high to low)
+        ->orderBy('visitor_count', 'desc') // If costs are the same, sort by visitor_count (high to low)
+        ->get();
+
+        return response()->json($restaurants, 200);
+    }
+
+    public function getAllRestaurantsRandomly()
+    {
+        // Retrieve all restaurants in a random order
+        $restaurants = Restaurant::inRandomOrder()->get();
+
+        // Return the list of restaurants
+        return response()->json($restaurants, 200);
+    }
 }
