@@ -11,6 +11,8 @@ use App\Models\Branch;
 use App\Models\BranchPhoneNumber;
 use App\Models\WeeklySchedule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Log; // Import the Log facade
+
 class RestaurantController extends Controller
 {
     public function store(Request $request)
@@ -18,13 +20,14 @@ class RestaurantController extends Controller
         // Validate the request
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'main_image' => 'nullable|string',
+            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'thumbnail_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Fixed typo
             'review' => 'nullable|string',
             'location' => 'nullable|string',
-            'food_id' => 'required|exists:SpinerFood,id',
+            'food_id' => 'required|exists:spiner_food,id',
             'status' => 'nullable|in:pending,recommend',
             'route' => 'nullable|string', // Added validation for route
-            'images.*' => 'nullable|string',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'urls' => 'nullable|array',
             'urls.facebook_url' => 'nullable|string',
             'urls.youtube_url' => 'nullable|string',
@@ -32,7 +35,7 @@ class RestaurantController extends Controller
             'urls.whatsapp_url' => 'nullable|string',
             'urls.instagram_url' => 'nullable|string',
             'urls.tiktok_url' => 'nullable|string',
-            'menus.*' => 'nullable|string',
+            'menus.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'phone_numbers.*' => 'nullable|string',
             'branches.*' => 'array',
             'branches.*.location' => 'nullable|string',
@@ -52,23 +55,51 @@ class RestaurantController extends Controller
             'schedule.thursday_closing_time' => 'nullable|date_format:H:i',
         ]);
 
+        Log::info('Request validated successfully.', ['validated_data' => $validated]);
+
+
+        // Handle main_image upload
+        $mainImageFileName = $request->hasFile('main_image')
+            ? $request->file('main_image')->store('restaurant_images', 'public')
+            : null;
+
+        // Handle thumbnail_image upload
+        $thumbnailImageFileName = $request->hasFile('thumbnail_image')
+            ? $request->file('thumbnail_image')->store('restaurant_images', 'public')
+            : null;
+
         // Create the restaurant
         $restaurant = Restaurant::create([
             'name' => $validated['name'],
-            'main_image' => $validated['main_image'],
-            'review' => $validated['review'],
-            'location' => $validated['location'],
+            'main_image' => $mainImageFileName,
+            'thumbnail_image' => $thumbnailImageFileName,
+            'review' => $validated['review'] ?? null,
+            'location' => $validated['location'] ?? null,
             'food_id' => $validated['food_id'],
-            'status' => $validated['status'],
-            'route' => $validated['route'], // Added route field
+            'status' => $validated['status'] ?? null,
+            'route' => $validated['route'] ?? null, // Added route field
         ]);
 
-        // Create images
-        if (isset($validated['images'])) {
-            foreach ($validated['images'] as $image) {
+
+
+        // Handle images upload
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $imagePath = $image->store('restaurant_images', 'public');
                 RestaurantImage::create([
                     'restaurant_id' => $restaurant->id,
-                    'image_url' => $image,
+                    'image_url' => $imagePath,
+                ]);
+            }
+        }
+
+        // Handle menus upload
+        if ($request->hasFile('menus')) {
+            foreach ($request->file('menus') as $menu) {
+                $menuPath = $menu->store('restaurant_images', 'public');
+                RestaurantMenu::create([
+                    'restaurant_id' => $restaurant->id,
+                    'menu_image' => $menuPath,
                 ]);
             }
         }
@@ -79,16 +110,6 @@ class RestaurantController extends Controller
                 ['restaurant_id' => $restaurant->id],
                 $validated['urls']
             ));
-        }
-
-        // Create menus
-        if (isset($validated['menus'])) {
-            foreach ($validated['menus'] as $menu) {
-                RestaurantMenu::create([
-                    'restaurant_id' => $restaurant->id,
-                    'menu_image' => $menu,
-                ]);
-            }
         }
 
         // Create phone numbers
@@ -106,7 +127,7 @@ class RestaurantController extends Controller
             foreach ($validated['branches'] as $branchData) {
                 $branch = Branch::create([
                     'restaurant_id' => $restaurant->id,
-                    'location' => $branchData['location'],
+                    'location' => $branchData['location'] ?? null,
                 ]);
 
                 if (isset($branchData['phone_numbers'])) {
@@ -130,7 +151,6 @@ class RestaurantController extends Controller
 
         return response()->json(['message' => 'Restaurant information created successfully.'], 201);
     }
-
 
 
 

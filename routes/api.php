@@ -31,11 +31,11 @@ Route::post('/restaurants/sorted-by-price', [RestaurantController::class, 'getRe
 //admin
 Route::middleware(['auth:sanctum'])->group(function () {
 Route::get('/visitor-actions/counts', [VisitorActionController::class, 'actionCounts']);
-Route::post('/addrestaurant_info', [RestaurantController::class, 'store']);
+
 Route::post('/visitor-actions', [VisitorActionController::class, 'store']);
 
 });
-
+Route::post('/addrestaurant_info', [RestaurantController::class, 'store']);
 
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
