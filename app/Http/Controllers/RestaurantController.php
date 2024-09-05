@@ -21,7 +21,7 @@ class RestaurantController extends Controller
             'main_image' => 'nullable|string',
             'review' => 'nullable|string',
             'location' => 'nullable|string',
-            'food_type' => 'nullable|string',
+            'food_id' => 'required|exists:SpinerFood,id',
             'status' => 'nullable|in:pending,recommend',
             'route' => 'nullable|string', // Added validation for route
             'images.*' => 'nullable|string',
@@ -58,7 +58,7 @@ class RestaurantController extends Controller
             'main_image' => $validated['main_image'],
             'review' => $validated['review'],
             'location' => $validated['location'],
-            'food_type' => $validated['food_type'],
+            'food_id' => $validated['food_id'],
             'status' => $validated['status'],
             'route' => $validated['route'], // Added route field
         ]);
@@ -152,7 +152,7 @@ class RestaurantController extends Controller
     public function get()
     {
         // Fetch all restaurants with specified fields
-        $restaurants = Restaurant::all(['id', 'name', 'main_image', 'review', 'location', 'food_type', 'status', 'route']);
+        $restaurants = Restaurant::all(['id', 'name', 'main_image', 'review', 'location', 'food_id', 'status', 'route']);
 
         // Return the restaurants as a JSON response
         return response()->json($restaurants);
