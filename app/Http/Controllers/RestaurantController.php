@@ -15,142 +15,335 @@ use Illuminate\Support\Facades\Log; // Import the Log facade
 
 class RestaurantController extends Controller
 {
-    public function store(Request $request)
-    {
-        // Validate the request
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'thumbnail_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Fixed typo
-            'review' => 'nullable|string',
-            'location' => 'nullable|string',
-            'food_id' => 'required|exists:spiner_food,id',
-            'status' => 'nullable|in:pending,recommend',
-            'route' => 'nullable|string', // Added validation for route
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'urls' => 'nullable|array',
-            'urls.facebook_url' => 'nullable|string',
-            'urls.youtube_url' => 'nullable|string',
-            'urls.twitter_url' => 'nullable|string',
-            'urls.whatsapp_url' => 'nullable|string',
-            'urls.instagram_url' => 'nullable|string',
-            'urls.tiktok_url' => 'nullable|string',
-            'menus.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'phone_numbers.*' => 'nullable|string',
-            'branches.*' => 'array',
-            'branches.*.location' => 'nullable|string',
-            'branches.*.phone_numbers.*' => 'nullable|string',
-            'schedule' => 'nullable|array',
-            'schedule.saturday_opening_time' => 'nullable|date_format:H:i',
-            'schedule.saturday_closing_time' => 'nullable|date_format:H:i',
-            'schedule.sunday_opening_time' => 'nullable|date_format:H:i',
-            'schedule.sunday_closing_time' => 'nullable|date_format:H:i',
-            'schedule.monday_opening_time' => 'nullable|date_format:H:i',
-            'schedule.monday_closing_time' => 'nullable|date_format:H:i',
-            'schedule.tuesday_opening_time' => 'nullable|date_format:H:i',
-            'schedule.tuesday_closing_time' => 'nullable|date_format:H:i',
-            'schedule.wednesday_opening_time' => 'nullable|date_format:H:i',
-            'schedule.wednesday_closing_time' => 'nullable|date_format:H:i',
-            'schedule.thursday_opening_time' => 'nullable|date_format:H:i',
-            'schedule.thursday_closing_time' => 'nullable|date_format:H:i',
-        ]);
+//     public function store(Request $request)
+//     {
+//         // Validate the request
+//         $validated = $request->validate([
+//             'name' => 'required|string|max:255',
+//             'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+//             'thumbnail_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Fixed typo
+//             'review' => 'nullable|string',
+//             'location' => 'nullable|string',
+//             'food_id' => 'required|exists:spiner_food,id',
+//             'status' => 'nullable|in:pending,recommend',
+//             'route' => 'nullable|string', // Added validation for route
+//             'cost' => 'required|numeric|min:0', // Corrected spelling and added numeric validation
 
-        Log::info('Request validated successfully.', ['validated_data' => $validated]);
+//             'images.*' => 'nullable|array|image|mimes:jpeg,png,jpg,gif|max:2048',
+//             'urls' => 'nullable|array',
+//             'urls.facebook_url' => 'nullable|string',
+//             'urls.youtube_url' => 'nullable|string',
+//             'urls.twitter_url' => 'nullable|string',
+//             'urls.whatsapp_url' => 'nullable|string',
+//             'urls.instagram_url' => 'nullable|string',
+//             'urls.tiktok_url' => 'nullable|string',
+//             'menus.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+//             'phone_numbers.*' => 'nullable|string',
+//             'branches.*' => 'array',
+//             'branches.*.location' => 'nullable|string',
+//             'branches.*.phone_numbers.*' => 'nullable|string',
+//             'schedule' => 'nullable|array',
+//             'schedule.saturday_opening_time' => 'nullable|date_format:H:i',
+//             'schedule.saturday_closing_time' => 'nullable|date_format:H:i',
+//             'schedule.sunday_opening_time' => 'nullable|date_format:H:i',
+//             'schedule.sunday_closing_time' => 'nullable|date_format:H:i',
+//             'schedule.monday_opening_time' => 'nullable|date_format:H:i',
+//             'schedule.monday_closing_time' => 'nullable|date_format:H:i',
+//             'schedule.tuesday_opening_time' => 'nullable|date_format:H:i',
+//             'schedule.tuesday_closing_time' => 'nullable|date_format:H:i',
+//             'schedule.wednesday_opening_time' => 'nullable|date_format:H:i',
+//             'schedule.wednesday_closing_time' => 'nullable|date_format:H:i',
+//             'schedule.thursday_opening_time' => 'nullable|date_format:H:i',
+//             'schedule.thursday_closing_time' => 'nullable|date_format:H:i',
+//         ]);
 
-
-        // Handle main_image upload
-        $mainImageFileName = $request->hasFile('main_image')
-            ? $request->file('main_image')->store('restaurant_images', 'public')
-            : null;
-
-        // Handle thumbnail_image upload
-        $thumbnailImageFileName = $request->hasFile('thumbnail_image')
-            ? $request->file('thumbnail_image')->store('restaurant_images', 'public')
-            : null;
-
-        // Create the restaurant
-        $restaurant = Restaurant::create([
-            'name' => $validated['name'],
-            'main_image' => $mainImageFileName,
-            'thumbnail_image' => $thumbnailImageFileName,
-            'review' => $validated['review'] ?? null,
-            'location' => $validated['location'] ?? null,
-            'food_id' => $validated['food_id'],
-            'status' => $validated['status'] ?? null,
-            'route' => $validated['route'] ?? null, // Added route field
-        ]);
+//         // Log::info('Request validated successfully.', ['validated_data' => $validated]);
 
 
+//         // Handle main_image upload
+//         $mainImageFileName = $request->hasFile('main_image')
+//             ? $request->file('main_image')->store('restaurant_images', 'public')
+//             : null;
 
-        // Handle images upload
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $imagePath = $image->store('restaurant_images', 'public');
-                RestaurantImage::create([
-                    'restaurant_id' => $restaurant->id,
-                    'image_url' => $imagePath,
-                ]);
-            }
+//         // Handle thumbnail_image upload
+//         $thumbnailImageFileName = $request->hasFile('thumbnail_image')
+//             ? $request->file('thumbnail_image')->store('restaurant_images', 'public')
+//             : null;
+
+//         // Create the restaurant
+//         $restaurant = Restaurant::create([
+//             'name' => $validated['name'],
+//             'main_image' => $mainImageFileName,
+//             'thumbnail_image' => $thumbnailImageFileName,
+//             'review' => $validated['review'] ?? null,
+//             'location' => $validated['location'] ?? null,
+//             'food_id' => $validated['food_id'],
+//             'status' => $validated['status'] ?? null,
+//             'route' => $validated['route'] ?? null,
+//             'cost' => $validated['cost']// Added route field
+//         ]);
+
+
+// //cost
+//         // Handle images upload
+//         if ($request->hasFile('images')) {
+//             foreach ($request->file('images') as $image) {
+//                 $imagePath = $image->store( 'public');
+//                 $restaurant->images()->create([
+//                     'image_url' => $imagePath,
+//                 ]);
+
+//             }
+//             return response()->json([
+//                 'message' => 'Images uploaded successfully.',
+//                 'uploaded_images' => $imagePath,
+//             ], 201);
+//         }
+
+
+//         // Handle menus upload
+//         if ($request->hasFile('menus')) {
+//             dd($request->file('menus'));
+//             $uploadedMenus = [];
+
+//             foreach ($request->file('menus') as $menu) {
+
+//                 $menuPath = $menu->store( 'public');
+
+
+//                 $restaurant->menus()->create([
+//                     'menu_image' => $menuPath,
+//                 ]);
+
+//                 // Add the uploaded menu path to the array
+//                 $uploadedMenus[] = $menuPath;
+//             }
+
+//             // Check if any menus were uploaded
+//             if (!empty($uploadedMenus)) {
+//                 return response()->json([
+//                     'message' => 'Menus uploaded successfully.',
+//                     'uploaded_menus' => $uploadedMenus,
+//                 ], 201);
+//             }
+//         }
+
+//         // If no menus were uploaded, return a different response
+//         return response()->json([
+//             'message' => 'No menus were uploaded.'
+//         ], 200);
+
+//         // Create URLs
+//         if (isset($validated['urls'])) {
+//             RestaurantUrl::create(array_merge(
+//                 ['restaurant_id' => $restaurant->id],
+//                 $validated['urls']
+//             ));
+//         }
+
+//         // Create phone numbers
+//         if (isset($validated['phone_numbers'])) {
+//             foreach ($validated['phone_numbers'] as $phoneNumber) {
+//                 RestaurantPhoneNumber::create([
+//                     'restaurant_id' => $restaurant->id,
+//                     'phone_number' => $phoneNumber,
+//                 ]);
+//             }
+//         }
+
+//         // Create branches
+//         if (isset($validated['branches'])) {
+//             foreach ($validated['branches'] as $branchData) {
+//                 $branch = Branch::create([
+//                     'restaurant_id' => $restaurant->id,
+//                     'location' => $branchData['location'] ?? null,
+//                 ]);
+
+//                 if (isset($branchData['phone_numbers'])) {
+//                     foreach ($branchData['phone_numbers'] as $phoneNumber) {
+//                         BranchPhoneNumber::create([
+//                             'branch_id' => $branch->id,
+//                             'phone_number' => $phoneNumber,
+//                         ]);
+//                     }
+//                 }
+//             }
+//         }
+
+//         // Create weekly schedule
+//         if (isset($validated['schedule'])) {
+//             WeeklySchedule::create(array_merge(
+//                 ['restaurant_id' => $restaurant->id],
+//                 $validated['schedule']
+//             ));
+//         }
+//         $response_data['restaurant_id'] = $restaurant->id;
+
+//         // Return all request data including uploaded files
+//         return response()->json([
+//             'message' => 'Restaurant information created successfully.',
+//             'data' => $response_data
+//         ], 201);
+//     }
+
+
+
+
+public function store(Request $request)
+{
+    // Validate the request
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'thumbnail_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'review' => 'nullable|string',
+        'location' => 'nullable|string',
+        'food_id' => 'required|exists:spiner_food,id',
+        'status' => 'nullable|in:pending,recommend',
+        'route' => 'nullable|string', // Added validation for route
+        'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'urls' => 'nullable|array',
+        'urls.facebook_url' => 'nullable|string',
+        'urls.youtube_url' => 'nullable|string',
+        'urls.twitter_url' => 'nullable|string',
+        'urls.whatsapp_url' => 'nullable|string',
+        'urls.instagram_url' => 'nullable|string',
+        'urls.tiktok_url' => 'nullable|string',
+        'menus.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'phone_numbers.*' => 'nullable|string',
+        'branches.*' => 'array',
+        'branches.*.location' => 'nullable|string',
+        'branches.*.phone_numbers.*' => 'nullable|string',
+        'schedule' => 'nullable|array',
+        'schedule.saturday_opening_time' => 'nullable|date_format:H:i',
+        'schedule.saturday_closing_time' => 'nullable|date_format:H:i',
+        'schedule.sunday_opening_time' => 'nullable|date_format:H:i',
+        'schedule.sunday_closing_time' => 'nullable|date_format:H:i',
+        'schedule.monday_opening_time' => 'nullable|date_format:H:i',
+        'schedule.monday_closing_time' => 'nullable|date_format:H:i',
+        'schedule.tuesday_opening_time' => 'nullable|date_format:H:i',
+        'schedule.tuesday_closing_time' => 'nullable|date_format:H:i',
+        'schedule.wednesday_opening_time' => 'nullable|date_format:H:i',
+        'schedule.wednesday_closing_time' => 'nullable|date_format:H:i',
+        'schedule.thursday_opening_time' => 'nullable|date_format:H:i',
+        'schedule.thursday_closing_time' => 'nullable|date_format:H:i',
+    ]);
+
+    // Initialize an array to store response data
+    $response_data = $validated;
+
+    // Handle 'main_image' upload
+    if ($request->hasFile('main_image')) {
+        $mainImagePath = $request->file('main_image')->store('restaurant_images', 'public');
+        $response_data['main_image'] = asset('storage/' . $mainImagePath);
+    }
+
+    // Handle 'thumbnail_image' upload
+    if ($request->hasFile('thumbnail_image')) {
+        $thumbnailImagePath = $request->file('thumbnail_image')->store('restaurant_images', 'public');
+        $response_data['thumbnail_image'] = ('storage/' . $thumbnailImagePath);
+    }
+
+    // Create the restaurant
+    $restaurant = Restaurant::create([
+        'name' => $validated['name'],
+        'main_image' => $mainImagePath ?? null,
+        'thumbnail_image' => $thumbnailImagePath ?? null,
+        'review' => $validated['review'],
+        'location' => $validated['location'],
+        'food_id' => $validated['food_id'],
+        'status' => $validated['status'],
+        'route' => $validated['route'], // Added route field
+    ]);
+
+    // Handle 'images' upload
+    if ($request->hasFile('images')) {
+        foreach ($request->file('images') as $image) {
+            $imagePath = $image->store('restaurant_images', 'public');
+            $restaurant->images()->create([
+                'image_url' => $imagePath,
+            ]);
         }
+    }
 
-        // Handle menus upload
-        if ($request->hasFile('menus')) {
-            foreach ($request->file('menus') as $menu) {
-                $menuPath = $menu->store('restaurant_images', 'public');
-                RestaurantMenu::create([
-                    'restaurant_id' => $restaurant->id,
-                    'menu_image' => $menuPath,
-                ]);
-            }
+    // Handle 'menus' upload
+    if ($request->hasFile('menus')) {
+        foreach ($request->file('menus') as $menu) {
+            $menuPath = $menu->store('restaurant_menus', 'public');
+            $restaurant->menus()->create([
+                'menu_image' => $menuPath,
+            ]);
         }
+    }
 
-        // Create URLs
-        if (isset($validated['urls'])) {
-            RestaurantUrl::create(array_merge(
-                ['restaurant_id' => $restaurant->id],
-                $validated['urls']
-            ));
+    // Handle 'urls' creation
+    if (isset($validated['urls'])) {
+        RestaurantUrl::create(array_merge(
+            ['restaurant_id' => $restaurant->id],
+            $validated['urls']
+        ));
+    }
+
+    // Handle 'phone_numbers' creation
+    if (isset($validated['phone_numbers'])) {
+        foreach ($validated['phone_numbers'] as $phoneNumber) {
+            RestaurantPhoneNumber::create([
+                'restaurant_id' => $restaurant->id,
+                'phone_number' => $phoneNumber,
+            ]);
         }
+    }
 
-        // Create phone numbers
-        if (isset($validated['phone_numbers'])) {
-            foreach ($validated['phone_numbers'] as $phoneNumber) {
-                RestaurantPhoneNumber::create([
-                    'restaurant_id' => $restaurant->id,
-                    'phone_number' => $phoneNumber,
-                ]);
-            }
-        }
+    // Handle 'branches' creation
+    if (isset($validated['branches'])) {
+        foreach ($validated['branches'] as $branchData) {
+            $branch = Branch::create([
+                'restaurant_id' => $restaurant->id,
+                'location' => $branchData['location'],
+            ]);
 
-        // Create branches
-        if (isset($validated['branches'])) {
-            foreach ($validated['branches'] as $branchData) {
-                $branch = Branch::create([
-                    'restaurant_id' => $restaurant->id,
-                    'location' => $branchData['location'] ?? null,
-                ]);
-
-                if (isset($branchData['phone_numbers'])) {
-                    foreach ($branchData['phone_numbers'] as $phoneNumber) {
-                        BranchPhoneNumber::create([
-                            'branch_id' => $branch->id,
-                            'phone_number' => $phoneNumber,
-                        ]);
-                    }
+            if (isset($branchData['phone_numbers'])) {
+                foreach ($branchData['phone_numbers'] as $phoneNumber) {
+                    BranchPhoneNumber::create([
+                        'branch_id' => $branch->id,
+                        'phone_number' => $phoneNumber,
+                    ]);
                 }
             }
         }
-
-        // Create weekly schedule
-        if (isset($validated['schedule'])) {
-            WeeklySchedule::create(array_merge(
-                ['restaurant_id' => $restaurant->id],
-                $validated['schedule']
-            ));
-        }
-
-        return response()->json(['message' => 'Restaurant information created successfully.'], 201);
     }
+
+    // Handle 'schedule' creation
+    if (isset($validated['schedule'])) {
+        WeeklySchedule::create(array_merge(
+            ['restaurant_id' => $restaurant->id],
+            $validated['schedule']
+        ));
+    }
+
+    // Retrieve all related data
+    $restaurant->load('images', 'menus', 'urls', 'phoneNumbers', 'branches.phoneNumbers', 'weeklySchedule');
+
+    // Format images and menus for response
+    $response_data['images'] = $restaurant->images->map(function ($image) {
+        return asset('storage/' . $image->image_url);
+    });
+
+    $response_data['menus'] = $restaurant->menus->map(function ($menu) {
+        return asset('storage/' . $menu->menu_image);
+    });
+
+    // Add restaurant data to the response
+    $response_data['restaurant'] = $restaurant;
+
+    // Return all request data including uploaded files and related data
+    return response()->json([
+        'message' => 'Restaurant information created successfully.',
+        'data' => $response_data
+    ], 201);
+}
+
+
 
 
 
@@ -172,7 +365,7 @@ class RestaurantController extends Controller
     public function get()
     {
         // Fetch all restaurants with specified fields
-        $restaurants = Restaurant::all(['id', 'name', 'main_image', 'review', 'location', 'food_id', 'status', 'route']);
+        $restaurants = Restaurant::all(['id', 'name', 'main_image', 'review', 'location', 'food_id','thumbnail_image', 'status', 'route']);
 
         // Return the restaurants as a JSON response
         return response()->json($restaurants);

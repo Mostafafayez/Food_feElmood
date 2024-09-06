@@ -35,7 +35,9 @@ Route::get('/visitor-actions/counts', [VisitorActionController::class, 'actionCo
 Route::post('/visitor-actions', [VisitorActionController::class, 'store']);
 
 });
-Route::post('/addrestaurant_info', [RestaurantController::class, 'store']);
+
+
+Route::post('/addrestaurant_info', [RestaurantController::class,'store']);
 
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -44,18 +46,18 @@ Route::post('/update-password', [AuthController::class, 'updatePassword']);
 //admin_spiner-food
 Route::middleware(['auth:sanctum'])->group(function () {
 Route::get('/spiner-food', [FoodTypeController::class, 'index']);
+
 Route::post('/spiner-food', [FoodTypeController::class, 'store']);
 Route::put('/spiner-food/{id}', [FoodTypeController::class, 'update']);
 Route::delete('/spiner-food/{id}', [FoodTypeController::class, 'destroy']);
 });
 
 
-
 Route::get('/spiner-food/active', [FoodSpinerController::class, 'getAllFoodsWithStatusTrue']);
 Route::get('/spiner-food/wheel', [FoodSpinerController::class, 'getMostPriorityFood']);
 
 
-
+route::post('/test',[RestaurantController::class,'store']);
 
 
 /////////comment
