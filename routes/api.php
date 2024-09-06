@@ -59,5 +59,18 @@ Route::get('/spiner-food/wheel', [FoodSpinerController::class, 'getMostPriorityF
 
 route::post('/test',[RestaurantController::class,'store']);
 
+Route::get('/link', function () {
+    try {
+
+        Artisan::call('storage:link');
+
+
+        return response()->json(['message' => 'Storage linked successfully.'], 200);
+    } catch (\Exception $e) {
+
+        return response()->json(['message' => 'Failed to link storage.', 'error' => $e->getMessage()], 500);
+    }
+});
+
 
 /////////comment
