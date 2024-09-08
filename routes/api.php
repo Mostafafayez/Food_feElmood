@@ -7,6 +7,7 @@ use App\Http\Controllers\VisitorActionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FoodTypeController;
 use App\Http\Controllers\FoodSpinerController;
+use App\Http\Controllers\DataEntryAuthController;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -37,6 +38,9 @@ Route::post('/visitor-actions', [VisitorActionController::class, 'store']);
 });
 
 
+//data-entry
+Route::post('/data-entry/register', [DataEntryAuthController::class, 'register']);
+Route::post('/data-entry/login', [DataEntryAuthController::class, 'login']);
 
 
 Route::post('/signup', [AuthController::class, 'signup']);
