@@ -74,7 +74,7 @@ route::post('/test',[RestaurantController::class,'store']);
 Route::get('/link', function () {
     try {
 
-        Artisan::call('optimize');
+        Artisan::call('route:clear');
 
 
         return response()->json(['message' => 'cache cleared successfully.'], 200);
