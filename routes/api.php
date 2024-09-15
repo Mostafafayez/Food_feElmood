@@ -69,7 +69,7 @@ Route::get('/spiner-food/active', [FoodSpinerController::class, 'getAllFoodsWith
 Route::get('/spiner-food/wheel', [FoodSpinerController::class, 'getMostPriorityFood']);
 
 
-route::get('/test',[RestaurantController::class,'getRecommendedRestaurants']);
+route::get('/recommended',[RestaurantController::class,'getRecommendedRestaurants']);
 
 Route::get('/link', function () {
     try {
