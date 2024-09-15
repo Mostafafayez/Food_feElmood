@@ -20,7 +20,7 @@ Route::get('/restaurants/{id}', [RestaurantController::class, 'show']);
 //restaurants
 Route::get('/restaurant', [RestaurantController::class, 'get']);
 Route::post('/restaurants/search', [RestaurantController::class, 'search']);
-Route::post('/restaurants/recommended/{language}', [RestaurantController::class, 'getRecommendedRestaurants']);
+Route::get('/restaurants/recommended/{language}', [RestaurantController::class, 'getRecommendedRestaurants']);
 
 Route::get('/restaurants/food/{food_id}', [RestaurantController::class, 'getByFoodId']);
 
