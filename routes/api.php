@@ -26,7 +26,7 @@ Route::get('/restaurants/recommended/{language}', [RestaurantController::class, 
 
 
 
-Route::get('/restaurants/recommended', [RestaurantController::class, 'getRecommendedRestaurants']);
+Route::post('/restaurants/recommended', [RestaurantController::class, 'getRecommendedRestaurants']);
 
 
 
