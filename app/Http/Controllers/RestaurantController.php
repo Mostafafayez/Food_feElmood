@@ -448,18 +448,45 @@ public function store(Request $request)
 
 
 
-    public function getRecommendedRestaurants()
+    public function getRecommendedRestaurants($language)
     {
-        $recommendedRestaurants = Restaurant::where('status', 'recommend')->get();
+        $recommendedRestaurants = Restaurant::where('status', 'recommend')
+            ->orderBy('value', 'asc')  // Sort by priority field
+            ->get();
 
         if ($recommendedRestaurants->isEmpty()) {
             return response()->json(['message' => 'Restaurant not found.'], 404);
         }
-        \DB::listen(function ($query) {
-            \Log::info($query->sql, $query->bindings);
+
+        $restaurants = $recommendedRestaurants->map(function($restaurant) use ($language) {
+            if ($language === 'en') {
+                return [
+                    'id' => $restaurant->id,
+                    'name' => $restaurant->name,
+                    'main_image' => $restaurant->main_image,
+                    'thumbnail_image' => $restaurant->thumbnail_image,
+                    'review' => $restaurant->review,
+                    'location' => $restaurant->location,
+                    'area' => $restaurant->area,
+                    'route' => $restaurant->route,
+                    'value' => $restaurant->value  // Include priority in the response
+                ];
+            } elseif ($language === 'ar') {
+                return [
+                    'id' => $restaurant->id,
+                    'name_ar' => $restaurant->name_ar,
+                    'main_image' => $restaurant->main_image,
+                    'thumbnail_image' => $restaurant->thumbnail_image,
+                    'review_ar' => $restaurant->review_ar,
+                    'location_ar' => $restaurant->location_ar,
+                    'area_ar' => $restaurant->area_ar,
+                    'route_ar' => $restaurant->route_ar,
+                    // 'value' => $restaurant->value  // Include priority in the response
+                ];
+            }
         });
 
-        return response()->json(['data' => $recommendedRestaurants], 200);
+        return response()->json(['data' => $restaurants], 200);
     }
 
 

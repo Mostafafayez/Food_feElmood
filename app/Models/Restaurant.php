@@ -10,7 +10,7 @@ class Restaurant extends Model
 {
     use HasFactory;
     public $timestamps = false;
-    protected $fillable = ['name','name_ar', 'main_image','thumbnail_image', 'review', 'review_ar','location', 'location_ar','status','route','route_ar','cost','food_id'];
+    protected $fillable = ['name','name_ar', 'main_image','thumbnail_image', 'review', 'review_ar','location', 'location_ar','area','area_ar','status','route','route_ar','value','cost','food_id'];
 
 
 
