@@ -13,7 +13,10 @@ class Restaurant extends Model
     protected $fillable = ['name','name_ar', 'main_image','thumbnail_image', 'review', 'review_ar','location', 'location_ar','area','area_ar','status','route','route_ar','value','cost','food_id'];
 
 
+    // public function getFullSrcAttribute()  {
+    //     return asset('storage/'.$this->image);
 
+    // }
 
 
     public function foodType()

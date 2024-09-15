@@ -446,9 +446,15 @@ public function store(Request $request)
         return response()->json(['data' => $restaurants], 200);
     }
 
+    public function getRecommendedRestaurants()
+    {
+        $recommendedRestaurants = Restaurant::where('status', 'recommend')
+            ->orderBy('value', 'asc')  // Sort by priority field
+            ->get();
+            return response()->json(['data' => $recommendedRestaurants], 200);    }
 
 
-    public function getRecommendedRestaurants($language)
+    public function getRecommendedRestaurantsbylang($language)
     {
         $recommendedRestaurants = Restaurant::where('status', 'recommend')
             ->orderBy('value', 'asc')  // Sort by priority field
