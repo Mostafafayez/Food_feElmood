@@ -23,7 +23,12 @@ Route::post('/restaurants/search', [RestaurantController::class, 'search']);
 
 
 Route::get('/restaurants/recommended/{language}', [RestaurantController::class, 'getRecommendedRestaurantsbylang']);
+
+
+
 Route::get('/restaurants/recommended', [RestaurantController::class, 'getRecommendedRestaurants']);
+
+
 
 Route::get('/restaurants/food/{food_id}', [RestaurantController::class, 'getByFoodId']);
 

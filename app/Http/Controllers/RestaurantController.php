@@ -448,10 +448,25 @@ public function store(Request $request)
 
     public function getRecommendedRestaurants()
     {
-        $recommendedRestaurants = Restaurant::where('status', 'recommend')
-            ->orderBy('value', 'asc') 
-            ->get();
-            return response()->json(['data' => $recommendedRestaurants], 200);    }
+        try {
+            // Query to get recommended restaurants ordered by 'value'
+            $recommendedRestaurants = Restaurant::where('status', 'recommend')
+                ->orderBy('value', 'asc')
+                ->get();
+
+            // Check if no restaurants were found
+            if ($recommendedRestaurants->isEmpty()) {
+                return response()->json(['message' => 'No recommended restaurants found.'], 404);
+            }
+
+            // Return the recommended restaurants with a 200 status code
+            return response()->json(['data' => $recommendedRestaurants], 200);
+
+        } catch (\Exception $e) {
+            // Handle any potential errors and return a server error response
+            return response()->json(['message' => 'An error occurred: ' . $e->getMessage()], 500);
+        }
+    }
 
 
     public function getRecommendedRestaurantsbylang($language)
