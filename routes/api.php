@@ -23,7 +23,7 @@ Route::post('/restaurants/search', [RestaurantController::class, 'search']);
 
 
 Route::get('/restaurants/recommended/{language}', [RestaurantController::class, 'getRecommendedRestaurantsbylang']);
-Route::post('/restaurants/recommended', [RestaurantController::class, 'getRecommendedRestaurants']);
+Route::get('/restaurants/recommended', [RestaurantController::class, 'getRecommendedRestaurants']);
 
 Route::get('/restaurants/food/{food_id}', [RestaurantController::class, 'getByFoodId']);
 
@@ -69,13 +69,13 @@ route::post('/test',[RestaurantController::class,'store']);
 Route::get('/link', function () {
     try {
 
-        Artisan::call('storage:link');
+        Artisan::call('optimize');
 
 
-        return response()->json(['message' => 'Storage linked successfully.'], 200);
+        return response()->json(['message' => 'cache cleared successfully.'], 200);
     } catch (\Exception $e) {
 
-        return response()->json(['message' => 'Failed to link storage.', 'error' => $e->getMessage()], 500);
+        return response()->json(['message' => 'Failed', 'error' => $e->getMessage()], 500);
     }
 });
 
