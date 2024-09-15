@@ -77,7 +77,7 @@ Route::get('/link', function () {
         Artisan::call('route:clear');
 
 
-        return response()->json(['message' => 'cache cleared successfully.'], 200);
+        return response()->json(['message' => 'route cleared successfully.'], 200);
     } catch (\Exception $e) {
 
         return response()->json(['message' => 'Failed', 'error' => $e->getMessage()], 500);
