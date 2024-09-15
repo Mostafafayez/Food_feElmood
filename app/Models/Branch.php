@@ -10,7 +10,7 @@ class Branch extends Model
     use HasFactory;
     public $timestamps = false;
 
-    protected $fillable = ['restaurant_id', 'location'];
+    protected $fillable = ['restaurant_id', 'location','location_ar'];
 
     public function restaurant()
     {

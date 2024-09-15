@@ -186,21 +186,21 @@ class RestaurantController extends Controller
 //         ], 201);
 //     }
 
-
-
-
 public function store(Request $request)
 {
     // Validate the request
     $validated = $request->validate([
         'name' => 'required|string|max:255',
+        'name_ar' => 'nullable|string|max:255', // Added Arabic name field
         'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         'thumbnail_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         'review' => 'nullable|string',
+        'review_ar' => 'nullable|string', // Added Arabic review field
         'location' => 'nullable|string',
         'food_id' => 'required|exists:spiner_food,id',
         'status' => 'nullable|in:pending,recommend',
         'route' => 'nullable|string', // Added validation for route
+        'route_ar' => 'nullable|string', // Added Arabic route field
         'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         'urls' => 'nullable|array',
         'urls.facebook_url' => 'nullable|string',
@@ -210,9 +210,12 @@ public function store(Request $request)
         'urls.instagram_url' => 'nullable|string',
         'urls.tiktok_url' => 'nullable|string',
         'menus.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'menu_ar' => 'nullable|array', // Added Arabic menus array
+        'menu_ar.*' => 'nullable|string', // Each menu item in Arabic
         'phone_numbers.*' => 'nullable|string',
         'branches.*' => 'array',
         'branches.*.location' => 'nullable|string',
+        'branches.*.location_ar' => 'nullable|string', // Added Arabic branch location field
         'branches.*.phone_numbers.*' => 'nullable|string',
         'schedule' => 'nullable|array',
         'schedule.saturday_opening_time' => 'nullable|date_format:H:i',
@@ -247,13 +250,16 @@ public function store(Request $request)
     // Create the restaurant
     $restaurant = Restaurant::create([
         'name' => $validated['name'],
+        'name_ar' => $validated['name_ar'] ?? null, // Save Arabic name
         'main_image' => $mainImagePath ?? null,
         'thumbnail_image' => $thumbnailImagePath ?? null,
         'review' => $validated['review'],
+        'review_ar' => $validated['review_ar'] ?? null, // Save Arabic review
         'location' => $validated['location'],
         'food_id' => $validated['food_id'],
         'status' => $validated['status'],
-        'route' => $validated['route'], // Added route field
+        'route' => $validated['route'], // Save route
+        'route_ar' => $validated['route_ar'] ?? null, // Save Arabic route
     ]);
 
     // Handle 'images' upload
@@ -272,6 +278,15 @@ public function store(Request $request)
             $menuPath = $menu->store('restaurant_menus', 'public');
             $restaurant->menus()->create([
                 'menu_image' => $menuPath,
+            ]);
+        }
+    }
+
+    // Handle 'menu_ar' creation (Arabic menu names)
+    if (isset($validated['menu_ar'])) {
+        foreach ($validated['menu_ar'] as $menuName) {
+            $restaurant->menus()->create([
+                'menu_name_ar' => $menuName, // Assuming there's a field to save Arabic menu names
             ]);
         }
     }
@@ -300,6 +315,7 @@ public function store(Request $request)
             $branch = Branch::create([
                 'restaurant_id' => $restaurant->id,
                 'location' => $branchData['location'],
+                'location_ar' => $branchData['location_ar'] ?? null, // Save Arabic branch location
             ]);
 
             if (isset($branchData['phone_numbers'])) {
@@ -342,6 +358,7 @@ public function store(Request $request)
         'data' => $response_data
     ], 201);
 }
+
 
 
 
