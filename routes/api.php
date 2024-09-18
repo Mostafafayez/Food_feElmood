@@ -8,6 +8,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FoodTypeController;
 use App\Http\Controllers\FoodSpinerController;
 use App\Http\Controllers\DataEntryAuthController;
+use App\Http\Controllers\BlogController;
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -17,7 +19,7 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/allinfo', [RestaurantController::class, 'index']);
 Route::get('/restaurants/{id}', [RestaurantController::class, 'show']);
-//restaurants
+//restaurants.
 Route::get('/restaurant', [RestaurantController::class, 'get']);
 Route::post('/restaurants/search', [RestaurantController::class, 'search']);
 
@@ -86,3 +88,11 @@ Route::get('/link', function () {
 
 Route::post('/addrestaurant_info', [RestaurantController::class,'store']);
 /////////comment
+
+
+
+
+
+Route::post('/blogs', [BlogController::class, 'store']);
+Route::get('/blogs', [BlogController::class, 'index']);
+Route::get('/blogs/{id}', [BlogController::class, 'show']);
