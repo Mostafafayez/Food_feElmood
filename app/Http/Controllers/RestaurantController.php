@@ -280,7 +280,7 @@ public function store(Request $request)
         foreach ($request->file('menus') as $menu) {
             $menuPath = $menu->store('restaurant_menus', 'public');
             $restaurant->menus()->create([
-                'menu_image' => $menuPath,
+                'menu_iamge' => $menuPath,
             ]);
         }
     }
@@ -289,7 +289,7 @@ public function store(Request $request)
     if (isset($validated['menu_ar'])) {
         foreach ($validated['menu_ar'] as $menuName) {
             $restaurant->menus()->create([
-                'menu_name_ar' => $menuName, // Assuming there's a field to save Arabic menu names
+                'menu_iamge_ar' => $menuName, // Assuming there's a field to save Arabic menu names
             ]);
         }
     }
