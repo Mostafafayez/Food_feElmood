@@ -196,7 +196,8 @@ public function store(Request $request)
         'name' => 'required|string|max:255',
         'name_ar' => 'nullable|string|max:255', // Added Arabic name field
         'area' => 'required|array', // Validate area as an array
-
+         'cost' => 'required|string|max:255',
+         'value' => 'required|string|max:255',
         'area_ar' => 'required|array', // Validate area as an array
 
         'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -259,6 +260,8 @@ public function store(Request $request)
     $restaurant = Restaurant::create([
         'name' => $validated['name'],
         'name_ar' => $validated['name_ar'] ?? null, // Save Arabic name
+        'cost' =>  $validated['cost'] ?? null,
+        'value' =>  $validated['value'] ?? null,
         'area' => json_encode($request->area),
         'area_ar' => json_encode($request->area_ar),
         'main_image' => $mainImagePath ?? null,
