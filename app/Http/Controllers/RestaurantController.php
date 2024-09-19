@@ -197,7 +197,7 @@ public function store(Request $request)
         'name_ar' => 'nullable|string|max:255', // Added Arabic name field
         'area' => 'required|array', // Validate area as an array
          'cost' => 'required|string|max:255',
-         'value' => 'required|string|max:255',
+         'value' => 'required|numeric|unique:Restaurant',
         'area_ar' => 'required|array', // Validate area as an array
 
         'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
