@@ -236,6 +236,8 @@ public function store(Request $request)
         'schedule.thursday_opening_time' => 'nullable|date_format:H:i',
         'schedule.thursday_closing_time' => 'nullable|date_format:H:i',
     ]);
+    Log::info('Restaurant store request received', ['request' => $request->all()]);
+
 
     // Initialize an array to store response data
     $response_data = $validated;
