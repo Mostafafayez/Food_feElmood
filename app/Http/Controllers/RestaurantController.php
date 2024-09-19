@@ -192,13 +192,16 @@ public function store(Request $request)
     $validated = $request->validate([
         'name' => 'required|string|max:255',
         'name_ar' => 'nullable|string|max:255', // Added Arabic name field
-        'area' => 'nullable|array',
-        'area.*' => 'string|max:255',
+        'area' => 'required|array', // Validate area as an array
+
+        'area_ar' => 'required|array', // Validate area as an array
+
         'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         'thumbnail_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         'review' => 'nullable|string',
         'review_ar' => 'nullable|string', // Added Arabic review field
         'location' => 'nullable|string',
+
         'food_id' => 'required|exists:spiner_food,id',
         'status' => 'nullable|in:pending,recommend',
         'route' => 'nullable|string', // Added validation for route
@@ -211,9 +214,9 @@ public function store(Request $request)
         'urls.whatsapp_url' => 'nullable|string',
         'urls.instagram_url' => 'nullable|string',
         'urls.tiktok_url' => 'nullable|string',
-        'menus.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        'menu_ar' => 'nullable|array', // Added Arabic menus array
-        'menu_ar.*' => 'nullable|string', // Each menu item in Arabic
+        'menu_image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'menus_image_ar.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+
         'phone_numbers.*' => 'nullable|string',
         'branches.*' => 'array',
         'branches.*.location' => 'nullable|string',
@@ -253,7 +256,8 @@ public function store(Request $request)
     $restaurant = Restaurant::create([
         'name' => $validated['name'],
         'name_ar' => $validated['name_ar'] ?? null, // Save Arabic name
-        'area' => $validated['area'] ?? [],
+        'area' => json_encode($request->area),
+        'area_ar' => json_encode($request->area_ar),
         'main_image' => $mainImagePath ?? null,
         'thumbnail_image' => $thumbnailImagePath ?? null,
         'review' => $validated['review'],
@@ -266,33 +270,32 @@ public function store(Request $request)
     ]);
 
     // Handle 'images' upload
-    if ($request->hasFile('images')) {
-        foreach ($request->file('images') as $image) {
-            $imagePath = $image->store('restaurant_images', 'public');
-            $restaurant->images()->create([
-                'image_url' => $imagePath,
-            ]);
-        }
-    }
-
-    // Handle 'menus' upload
-    if ($request->hasFile('menus')) {
-        foreach ($request->file('menus') as $menu) {
+    if ($request->hasFile('menu_image')) {
+        foreach ($request->file('menu_image') as $menu) {
             $menuPath = $menu->store('restaurant_menus', 'public');
-            $restaurant->menus()->create([
-                'menu_iamge' => $menuPath,
-            ]);
+            // Store the path in response data for later use
+            $response_data['menu_image'][] = $menuPath;
         }
     }
 
-    // Handle 'menu_ar' creation (Arabic menu names)
-    if (isset($validated['menu_ar'])) {
-        foreach ($validated['menu_ar'] as $menuName) {
-            $restaurant->menus()->create([
-                'menu_iamge_ar' => $menuName, // Assuming there's a field to save Arabic menu names
-            ]);
+    // Handle 'menus_image_ar' upload
+    $menuPath_ar = null; // Initialize with null
+    if ($request->hasFile('menus_image_ar')) {
+        foreach ($request->file('menus_image_ar') as $menuFile) {
+            $menuPath_ar = $menuFile->store('restaurant_menus', 'public');
+            // Store the path in response data for later use
+            $response_data['menus_image_ar'][] = $menuPath_ar;
         }
     }
+
+    // Ensure that menus are created only if images exist
+    if (isset($menuPath) || isset($menuPath_ar)) {
+        $restaurant->menus()->create([
+            'menu_image' => $menuPath ?? null,   // Assign only if menuPath is set
+            'menus_image_ar' => $menuPath_ar ?? null,   // Assign only if menuPath_ar is set
+        ]);
+    }
+
 
     // Handle 'urls' creation
     if (isset($validated['urls'])) {
@@ -348,10 +351,14 @@ public function store(Request $request)
         return asset('storage/' . $image->image_url);
     });
 
-    $response_data['menus'] = $restaurant->menus->map(function ($menu) {
+    // Format menu images for response
+    $response_data['menu_image'] = $restaurant->menus->map(function ($menu) {
         return asset('storage/' . $menu->menu_image);
     });
 
+    $response_data['menus_image_ar'] = $restaurant->menus->map(function ($menu) {
+        return asset('storage/' . $menu->menus_image_ar);
+    });
     // Add restaurant data to the response
     $response_data['restaurant'] = $restaurant;
 
