@@ -11,6 +11,7 @@ use App\Models\Branch;
 use App\Models\BranchPhoneNumber;
 use App\Models\WeeklySchedule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Exception;
 use Illuminate\Support\Facades\Log; // Import the Log facade
 
 class RestaurantController extends Controller
@@ -188,6 +189,8 @@ class RestaurantController extends Controller
 
 public function store(Request $request)
 {
+
+    try {
     // Validate the request
     $validated = $request->validate([
         'name' => 'required|string|max:255',
@@ -236,8 +239,6 @@ public function store(Request $request)
         'schedule.thursday_opening_time' => 'nullable|date_format:H:i',
         'schedule.thursday_closing_time' => 'nullable|date_format:H:i',
     ]);
-    Log::info('Restaurant store request received', ['request' => $request->all()]);
-
 
     // Initialize an array to store response data
     $response_data = $validated;
@@ -270,6 +271,8 @@ public function store(Request $request)
         'route' => $validated['route'], // Save route
         'route_ar' => $validated['route_ar'] ?? null, // Save Arabic route
     ]);
+    Log::info('Restaurant created', ['restaurant_id' => $restaurant->id]);
+
 
     // Handle 'images' upload
     if ($request->hasFile('menu_image')) {
@@ -277,6 +280,8 @@ public function store(Request $request)
             $menuPath = $menu->store('restaurant_menus', 'public');
             // Store the path in response data for later use
             $response_data['menu_image'][] = $menuPath;
+            Log::info('Menu image uploaded', ['menu_image_path' => $menuPath]);
+
         }
     }
 
@@ -287,6 +292,8 @@ public function store(Request $request)
             $menuPath_ar = $menuFile->store('restaurant_menus', 'public');
             // Store the path in response data for later use
             $response_data['menus_image_ar'][] = $menuPath_ar;
+            Log::info('Arabic menu image uploaded', ['menus_image_ar_path' => $menuPath_ar]);
+
         }
     }
 
@@ -369,6 +376,22 @@ public function store(Request $request)
         'message' => 'Restaurant information created successfully.',
         'data' => $response_data
     ], 201);
+
+} catch (ModelNotFoundException $e) {
+    // Log and return specific error for missing model
+    Log::error('Model not found error', ['error' => $e->getMessage()]);
+    return response()->json([
+        'message' => 'Error: Model not found.',
+        'error' => $e->getMessage()
+    ], 404);
+} catch (Exception $e) {
+    // Log and return general error
+    Log::error('An error occurred during restaurant creation', ['error' => $e->getMessage()]);
+    return response()->json([
+        'message' => 'An error occurred during restaurant creation.',
+        'error' => $e->getMessage()
+    ], 500);
+}
 }
 
 
