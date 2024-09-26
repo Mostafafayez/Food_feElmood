@@ -30,31 +30,24 @@ class FoodSpinerController extends Controller
             return response()->json(['message' => 'No food found with status true'], 404);
         }
 
-        // Calculate the total weight (sum of all weights)
-        $totalWeight = 0;
 
-        // Array to hold weights of each food item
-        $weightedFoods = [];
+      
+        
 
-        foreach ($foods as $food) {
-            // Weight calculation: The lower the priority number, the higher the weight
-            $weight = 1 / ($food->priority ?: 1);  // Ensure no division by zero
-            $totalWeight += $weight;
-            $weightedFoods[] = ['food' => $food, 'weight' => $weight];
-        }
 
-        // Select a random item based on the weights
-        $randomValue = mt_rand() / mt_getrandmax();  // Random float between 0 and 1
-        $cumulativeWeight = 0;
 
-        foreach ($weightedFoods as $weightedFood) {
-            $cumulativeWeight += $weightedFood['weight'] / $totalWeight;  // Normalize weight
 
-            if ($randomValue <= $cumulativeWeight) {
-                return response()->json($weightedFood['food']);
-            }
-        }
 
+
+
+
+
+
+
+
+
+
+        
         return response()->json(['message' => 'No food found with status true'], 404);
     }
 

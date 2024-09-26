@@ -87,7 +87,7 @@ Route::get('/link', function () {
 });
 
 Route::post('/addrestaurant_info', [RestaurantController::class,'store']);
-/////////comment
+/////////comment  sp
 
 
 

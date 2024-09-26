@@ -16,7 +16,7 @@ class Restaurant extends Model
     // public function getFullSrcAttribute()  {
     //     return asset('storage/'.$this->image);
 
-    // }
+    // }0000000000000000000000000000000000000000000000000000
 
 
     public function foodType()

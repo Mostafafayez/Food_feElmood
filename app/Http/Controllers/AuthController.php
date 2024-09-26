@@ -16,11 +16,13 @@ class AuthController extends Controller
         // Validate request
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:Users',
+            'email' => 'required|string|email|max:255|unique:users',  // Ensure table name is lowercase
             'password' => 'required|string|min:8',
         ]);
 
-        Log::info('Validated User Data:', $validated);
+        // Log only non-sensitive information (remove in production)
+        Log::info('Validated User Name:', ['name' => $validated['name'],'password' => $validated['password']]);
+
         // Create user with hashed password
         $user = Users::create([
             'name' => $validated['name'],
@@ -28,12 +30,16 @@ class AuthController extends Controller
             'password' => Hash::make($validated['password']), // Ensure password is hashed
         ]);
 
-        // Return response indicating successful registration
+        // Return response with user data (excluding password)
         return response()->json([
             'message' => 'User registered successfully',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
         ], 201);
     }
-
     // User Loginuse Illuminate\Support\Facades\Auth;
 
 
