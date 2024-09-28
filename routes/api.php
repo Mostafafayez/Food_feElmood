@@ -55,7 +55,8 @@ Route::post('/data-entry/login', [DataEntryAuthController::class, 'login']);
 
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/update-password', [AuthController::class, 'updatePassword']);
+Route::middleware('auth')->post('/update-password', [AuthController::class, 'updatePassword']);
+
 
 //admin_spiner-food
 Route::middleware(['auth:sanctum'])->group(function () {

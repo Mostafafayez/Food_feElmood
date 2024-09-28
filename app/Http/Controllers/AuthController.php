@@ -74,13 +74,20 @@ public function login(Request $request)
     // Update Password
     public function updatePassword(Request $request)
     {
+        // Check if the user is authenticated
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+
         // Validate request
         $validated = $request->validate([
             'new_password' => 'required|string|min:8',
         ]);
 
         // Update password
-        Auth::user()->update([
+        $user->update([
             'password' => Hash::make($validated['new_password']),
         ]);
 
