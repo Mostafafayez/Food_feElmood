@@ -55,12 +55,12 @@ Route::post('/data-entry/login', [DataEntryAuthController::class, 'login']);
 
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::middleware('auth')->post('/update-password', [AuthController::class, 'updatePassword']);
+Route::post('/update-password/{user_id}', [AuthController::class, 'updatePassword']);
 
 
 //admin_spiner-food
 Route::middleware(['auth:sanctum'])->group(function () {
-Route::get('/spiner-food', [FoodTypeController::class, 'index']);
+Route::get('/food_type', [FoodTypeController::class, 'index']);
 // Route::post('/addrestaurant_info', [RestaurantController::class,'store']);
 Route::post('/spiner-food', [FoodTypeController::class, 'store']);
 Route::put('/spiner-food/{id}', [FoodTypeController::class, 'update']);

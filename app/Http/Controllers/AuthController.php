@@ -72,26 +72,29 @@ public function login(Request $request)
 }
 
     // Update Password
-    public function updatePassword(Request $request)
+    public function updatePassword(Request $request, $user_id)
     {
-        // Check if the user is authenticated
-        $user = Auth::user();
+        // Find the user by their ID
+        $user = Users::find($user_id);
 
+        // Check if the user exists
         if (!$user) {
-            return response()->json(['message' => 'User not authenticated'], 401);
+            return response()->json(['message' => 'User not found'], 404);
         }
 
-        // Validate request
+        // Validate the request
         $validated = $request->validate([
             'new_password' => 'required|string|min:8',
         ]);
 
-        // Update password
+        // Update the user's password
         $user->update([
             'password' => Hash::make($validated['new_password']),
         ]);
 
         return response()->json(['message' => 'Password updated successfully'], 200);
     }
+
+
 
 }
