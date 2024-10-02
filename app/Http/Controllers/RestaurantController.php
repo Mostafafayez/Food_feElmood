@@ -484,29 +484,27 @@ public function store(Request $request)
     //     return response()->json(['data' => $restaurants], 200);
     // }
 
-
     public function search(Request $request)
     {
         // Validation for request parameters
         $request->validate([
-            'area' => 'nullable|string|max:255',
+            'area' => 'nullable|string|max:255',  // Area can be a string
             'food_id' => 'nullable|integer',  // Validate food_id as an integer
         ]);
 
         // Initialize the query builder
         $query = Restaurant::query();
 
-        // Apply both area and food_id filters together if both are provided
-        if ($request->filled('area') && $request->filled('food_id')) {
-            $query->where('area', $request->input('area'))
-                  ->where('food_id', $request->input('food_id'));
+        // Handle the case where the area is provided
+        if ($request->filled('area')) {
+            $area = $request->input('area');
+
+            // Use LIKE for partial matching
+            $query->where('area', 'like', '%' . $area . '%');
         }
-        // Handle case where only area is provided
-        elseif ($request->filled('area')) {
-            $query->where('area', $request->input('area'));
-        }
-        // Handle case where only food_id is provided
-        elseif ($request->filled('food_id')) {
+
+        // Handle the case where food_id is provided
+        if ($request->filled('food_id')) {
             $query->where('food_id', $request->input('food_id'));
         }
 
@@ -516,6 +514,7 @@ public function store(Request $request)
         // Return JSON response with all data
         return response()->json(['data' => $restaurants], 200);
     }
+
 
 
 
