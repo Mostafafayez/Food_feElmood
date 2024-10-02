@@ -486,40 +486,37 @@ public function store(Request $request)
 
 
 
-
-
     public function search(Request $request)
-{
-    // Validation for request parameters
-    $request->validate([
-        'name' => 'nullable|string|max:255',
-        'area' => 'nullable|string|max:255',
-    ]);
+    {
+        // Validation for request parameters
+        $request->validate([
+            'area' => 'nullable|string|max:255',
+            'food_id' => 'nullable|integer',  // Validate food_id as an integer
+        ]);
 
-    // Initialize the query builder
-    $query = Restaurant::query();
+        // Initialize the query builder
+        $query = Restaurant::query();
 
-    // Apply both name and area filters together
-    if ($request->filled('name') && $request->filled('area')) {
-        $query->where('name', $request->input('name'))
-              ->where('area', $request->input('area'));
+        // Apply both area and food_id filters together if both are provided
+        if ($request->filled('area') && $request->filled('food_id')) {
+            $query->where('area', $request->input('area'))
+                  ->where('food_id', $request->input('food_id'));
+        }
+        // Handle case where only area is provided
+        elseif ($request->filled('area')) {
+            $query->where('area', $request->input('area'));
+        }
+        // Handle case where only food_id is provided
+        elseif ($request->filled('food_id')) {
+            $query->where('food_id', $request->input('food_id'));
+        }
+
+        // Paginate results to improve performance
+        $restaurants = $query->paginate(10);  // 10 results per page
+
+        // Return JSON response with pagination
+        return response()->json($restaurants, 200);
     }
-
-    // Optional: Handle case when only name or only area is provided
-    elseif ($request->filled('name')) {
-        $query->where('name', $request->input('name'));
-    }
-
-    elseif ($request->filled('area')) {
-        $query->where('area', $request->input('area'));
-    }
-
-    // Paginate results to improve performance
-    $restaurants = $query->paginate(10);  // 10 results per page
-
-    // Return JSON response with pagination
-    return response()->json($restaurants, 200);
-}
 
 
     public function getRecommendedRestaurants()
