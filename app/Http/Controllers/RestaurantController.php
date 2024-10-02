@@ -471,6 +471,11 @@ public function store(Request $request)
         }
 
 
+        if ($request->has('area')) {
+            $query->where('area', 'like', '%' . $request->input('area') . '%');
+        }
+
+
         if ($request->has('branch_location')) {
             $query->whereHas('branches', function ($q) use ($request) {
                 $q->where('location', 'like', '%' . $request->input('branch_location') . '%');
