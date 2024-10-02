@@ -17,7 +17,7 @@ Route::get('/user', function (Request $request) {
 
 
 
-Route::get('/allinfo', [RestaurantController::class, 'index']);
+Route::get('/restaurants', [RestaurantController::class, 'index']);
 Route::get('/restaurants/{id}', [RestaurantController::class, 'show']);
 //restaurants.
 Route::get('/restaurant', [RestaurantController::class, 'get']);
