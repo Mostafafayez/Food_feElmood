@@ -485,7 +485,6 @@ public function store(Request $request)
     // }
 
 
-
     public function search(Request $request)
     {
         // Validation for request parameters
@@ -511,12 +510,13 @@ public function store(Request $request)
             $query->where('food_id', $request->input('food_id'));
         }
 
-        // Paginate results to improve performance
-        $restaurants = $query->paginate(10);  // 10 results per page
+        // Retrieve all matching records without pagination
+        $restaurants = $query->get();
 
-        // Return JSON response with pagination
-        return response()->json($restaurants, 200);
+        // Return JSON response with all data
+        return response()->json(['data' => $restaurants], 200);
     }
+
 
 
     public function getRecommendedRestaurants()
