@@ -449,45 +449,78 @@ public function store(Request $request)
     }
 
 
+    // public function search(Request $request)
+    // {
+    //     $query = Restaurant::query();
+
+    //     // Apply filters based on request parameters
+    //     if ($request->has('name')) {
+    //         $query->where('name', 'like', '%' . $request->input('name') . '%');
+    //     }
+
+    //     if ($request->has('food_type')) {
+    //         $query->where('food_type', $request->input('food_type'));
+    //     }
+
+    //     if ($request->has('status')) {
+    //         $query->where('status', $request->input('status'));
+    //     }
+
+    //     if ($request->has('location')) {
+    //         $query->where('location', 'like', '%' . $request->input('location') . '%');
+    //     }
+
+
+    //     if ($request->has('area')) {
+    //         $query->where('area', 'like', '%' . $request->input('area') . '%');
+    //     }
+
+
+
+    //     // You can add more filters here based on other columns if needed
+
+    //     $restaurants = $query->get();
+
+    //     return response()->json(['data' => $restaurants], 200);
+    // }
+
+
+
+
+
     public function search(Request $request)
-    {
-        $query = Restaurant::query();
+{
+    // Validation for request parameters
+    $request->validate([
+        'name' => 'nullable|string|max:255',
+        'area' => 'nullable|string|max:255',
+    ]);
 
-        // Apply filters based on request parameters
-        if ($request->has('name')) {
-            $query->where('name', 'like', '%' . $request->input('name') . '%');
-        }
+    // Initialize the query builder
+    $query = Restaurant::query();
 
-        if ($request->has('food_type')) {
-            $query->where('food_type', $request->input('food_type'));
-        }
-
-        if ($request->has('status')) {
-            $query->where('status', $request->input('status'));
-        }
-
-        if ($request->has('location')) {
-            $query->where('location', 'like', '%' . $request->input('location') . '%');
-        }
-
-
-        if ($request->has('area')) {
-            $query->where('area', 'like', '%' . $request->input('area') . '%');
-        }
-
-
-        if ($request->has('branch_location')) {
-            $query->whereHas('branches', function ($q) use ($request) {
-                $q->where('location', 'like', '%' . $request->input('branch_location') . '%');
-            });
-        }
-
-        // You can add more filters here based on other columns if needed
-
-        $restaurants = $query->get();
-
-        return response()->json(['data' => $restaurants], 200);
+    // Apply both name and area filters together
+    if ($request->filled('name') && $request->filled('area')) {
+        $query->where('name', $request->input('name'))
+              ->where('area', $request->input('area'));
     }
+
+    // Optional: Handle case when only name or only area is provided
+    elseif ($request->filled('name')) {
+        $query->where('name', $request->input('name'));
+    }
+
+    elseif ($request->filled('area')) {
+        $query->where('area', $request->input('area'));
+    }
+
+    // Paginate results to improve performance
+    $restaurants = $query->paginate(10);  // 10 results per page
+
+    // Return JSON response with pagination
+    return response()->json($restaurants, 200);
+}
+
 
     public function getRecommendedRestaurants()
     {
