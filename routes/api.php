@@ -60,7 +60,7 @@ Route::post('/update-password/{user_id}', [AuthController::class, 'updatePasswor
 
 //admin_spiner-food
 Route::middleware(['auth:sanctum'])->group(function () {
-Route::get('/food_type', [FoodTypeController::class, 'index']);
+
 // Route::post('/addrestaurant_info', [RestaurantController::class,'store']);
 Route::post('/spiner-food', [FoodTypeController::class, 'store']);
 Route::put('/spiner-food/{id}', [FoodTypeController::class, 'update']);
@@ -97,3 +97,4 @@ Route::post('/addrestaurant_info', [RestaurantController::class,'store']);
 Route::post('/blogs', [BlogController::class, 'store']);
 Route::get('/blogs', [BlogController::class, 'index']);
 Route::get('/blogs/{id}', [BlogController::class, 'show']);
+Route::get('/food_type', [FoodTypeController::class, 'index']);
