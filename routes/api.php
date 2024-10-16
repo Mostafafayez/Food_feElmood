@@ -44,11 +44,11 @@ Route::post('/restaurants/sorted-by-price', [RestaurantController::class, 'getRe
 Route::middleware(['auth:sanctum'])->group(function () {
 Route::get('/visitor-actions/counts', [VisitorActionController::class, 'actionCounts']);
 // Route::get('/visitor-actions/counts/{id}', [VisitorActionController::class, 'actionCountsbyid']);
-Route::post('/visitor-actions', [VisitorActionController::class, 'store']);
+// Route::post('/visitor-actions', [VisitorActionController::class, 'store']);
 
 });
 Route::get('/visitor-actions/counts/{rest_id}', [VisitorActionController::class, 'actionCountsById']);
-
+Route::post('/visitor-actions', [VisitorActionController::class, 'store']);
 //data-entry
 Route::post('/data-entry/register', [DataEntryAuthController::class, 'register']);
 Route::post('/data-entry/login', [DataEntryAuthController::class, 'login']);
@@ -57,6 +57,7 @@ Route::post('/data-entry/login', [DataEntryAuthController::class, 'login']);
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/update-password/{user_id}', [AuthController::class, 'updatePassword']);
+
 
 
 //admin_spiner-food
