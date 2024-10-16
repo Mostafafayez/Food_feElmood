@@ -9,6 +9,7 @@ use App\Http\Controllers\FoodTypeController;
 use App\Http\Controllers\FoodSpinerController;
 use App\Http\Controllers\DataEntryAuthController;
 use App\Http\Controllers\BlogController;
+use Illuminate\Support\Facades\Artisan;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -42,11 +43,11 @@ Route::post('/restaurants/sorted-by-price', [RestaurantController::class, 'getRe
 //admin
 Route::middleware(['auth:sanctum'])->group(function () {
 Route::get('/visitor-actions/counts', [VisitorActionController::class, 'actionCounts']);
-
+// Route::get('/visitor-actions/counts/{id}', [VisitorActionController::class, 'actionCountsbyid']);
 Route::post('/visitor-actions', [VisitorActionController::class, 'store']);
 
 });
-
+Route::get('/visitor-actions/counts/{rest_id}', [VisitorActionController::class, 'actionCountsById']);
 
 //data-entry
 Route::post('/data-entry/register', [DataEntryAuthController::class, 'register']);

@@ -34,4 +34,21 @@ class VisitorActionController extends Controller
 
         return response()->json(['data' => $actionCounts], 200);
     }
+
+
+
+
+
+    public function actionCountsById(Request $request, $id)
+    {
+        // Fetch counts of each action for the specific id
+        $actionCounts = VisitorAction::select('action', DB::raw('count(*) as count'))
+            ->where('restaurant_id', $id)  // Add condition to filter by id
+            ->groupBy('action')
+            ->get();
+    
+        return response()->json(['data' => $actionCounts], 200);
+    }
+    
+
 }
