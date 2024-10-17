@@ -18,7 +18,11 @@ class ComposerController extends Controller
 
         // Check if the process succeeded
         if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
+            // Return the error output
+            return response()->json([
+                'message' => 'Failed to install package',
+                'error' => $process->getErrorOutput()
+            ], 500);
         }
 
         return response()->json(['message' => 'Package simplesoftwareio/simple-qrcode installed successfully!']);
