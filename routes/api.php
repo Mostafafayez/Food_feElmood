@@ -100,3 +100,15 @@ Route::post('/blogs', [BlogController::class, 'store']);
 Route::get('/blogs', [BlogController::class, 'index']);
 Route::get('/blogs/{id}', [BlogController::class, 'show']);
 Route::get('/food_type', [FoodTypeController::class, 'index']);
+
+
+
+
+
+///////qr code 
+
+
+
+use App\Http\Controllers\QrCodeController;
+
+Route::post('/generate-qr-code', [QrCodeController::class, 'generateQrCode']);
