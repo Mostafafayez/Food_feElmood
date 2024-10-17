@@ -112,3 +112,6 @@ Route::get('/food_type', [FoodTypeController::class, 'index']);
 use App\Http\Controllers\QrCodeController;
 
 Route::post('/generate-qr-code', [QrCodeController::class, 'generateQrCode']);
+use App\Http\Controllers\ComposerController;
+
+Route::get('require-qrcode', [ComposerController::class, 'requireQrcode']);

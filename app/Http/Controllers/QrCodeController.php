@@ -20,7 +20,7 @@ class QrCodeController extends Controller
         $link = $validatedData['link'];
 
         // Generate QR code
-        $qrCode = qrcode::format('png')
+        $qrCode = QrCode::format('png')
             ->size(300)
             ->color(150, 0, 0) // RGB for red
             ->generate($link);
