@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\QrCodeModel;
 use Stevebauman\Location\Facades\Location;
 use Illuminate\Support\Facades\Log;
-
+use Intervention\Image\Facades\Image;
 class QrCodeController extends Controller
 {
     public function generateQrCode(Request $request)
@@ -34,6 +34,19 @@ class QrCodeController extends Controller
             ->size(200)
             ->color(0, 0, 0) // RGB for red
             ->generate($trackingLink);
+
+
+              // Load the QR code image
+    $qrCodeImage = Image::make($qrCode);
+
+    // Load the logo
+    $logo = Image::make(public_path('qrcodes/logo.png'));
+
+    // Resize logo to fit in the QR code (you can adjust the size as needed)
+    $logo->resize(50, 50); // Change size as needed
+
+    // Insert logo into the center of the QR code
+    $qrCodeImage->insert($logo, 'center');
 
         // Save the QR code image in the storage (public folder)
         $fileName = 'qrcodes/' . uniqid() . '.png';
