@@ -11,8 +11,15 @@ return [
     |
     */
 
-    'driver' => Stevebauman\Location\Drivers\IpApi::class,
+    'driver' => env('LOCATION_DRIVER', 'ipstack'), // Set it to 'ipstack'
 
+    'drivers' => [
+        'ipstack' => [
+            'class' => Stevebauman\Location\Drivers\IpApi::class, // Use IpApi if IPStack is not available
+            'key' => env('IPSTACK_API_KEY'), // Your IPStack API key
+        ],
+        // Other drivers...
+    ],
     /*
     |--------------------------------------------------------------------------
     | Driver Fallbacks
