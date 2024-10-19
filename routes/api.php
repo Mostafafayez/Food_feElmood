@@ -132,7 +132,7 @@ Route::get('/actions/visitor-count/total', [VisitorActionController::class, 'get
 
 use App\Http\Controllers\QrCodeController;
 
-Route::post('/generate-qr-code', [QrCodeController::class, 'generateQrCode']);
-use App\Http\Controllers\ComposerController;
+Route::post('/generate-qr-code', [QrCodeController::class, 'generateQrCodeapi']);
 
-Route::get('/require-qrcode', [ComposerController::class, 'requireQrcode']);
+
+Route::get('/track-scan/{id}', [QrCodeController::class, 'trackScanapi']);

@@ -48,6 +48,46 @@ class QrCodeController extends Controller
     }
 
 
+    public function generateQrCodeapi(Request $request)
+    {
+        // Validate incoming data
+        $validatedData = $request->validate([
+            'link' => 'required|url', // Ensure the input is a valid URL
+        ]);
+
+        $link = $validatedData['link'];
+
+        // Create a new QrCodeModel and save the link
+        $qrCodeModel = new QrCodeModel();
+        $qrCodeModel->link = $link;
+        $qrCodeModel->qr_code_path = ''; // Temporarily empty, will be updated later
+        $qrCodeModel->save();
+
+        // Generate the QR code with the tracking route using the saved model's ID
+        $trackingLink = route('qrcode.scan', ['id' => $qrCodeModel->id]);
+
+        $qrCode = QrCode::format('png')
+            ->backgroundColor(255, 255, 255)
+            ->size(200)
+            ->color(0, 0, 0)
+            ->generate($trackingLink);
+
+        // Save the QR code image in the storage (public folder)
+        $fileName = 'qrcodes/' . uniqid() . '.png';
+        Storage::disk('public')->put($fileName, $qrCode);
+
+        // Update the qr_code_path in the model
+        $qrCodeModel->qr_code_path = $fileName;
+        $qrCodeModel->save();
+
+        // Return the QR code URL as a JSON response
+        return response()->json([
+            'qr_code_url' => Storage::url($fileName),
+            'tracking_link' => $trackingLink
+        ]);
+    }
+
+
 
 
     public function trackScan($id, Request $request)
@@ -96,6 +136,48 @@ class QrCodeController extends Controller
 
         // Redirect the user to the original link
         return redirect($qrCodeModel->link);
+    }
+
+
+
+
+    public function trackScanapi($id, Request $request)
+    {
+        // Find the QR code by its ID
+        $qrCodeModel = QrCodeModel::findOrFail($id);
+
+        // Get the user's location based on their IP address
+        $userLocation = Location::get($request->ip());
+
+        // Increment the scan count
+        $qrCodeModel->scans_count += 1;
+        $qrCodeModel->save();
+
+        // Optionally: Save the location data if needed
+        if ($userLocation && isset($userLocation->ip, $userLocation->countryName, $userLocation->cityName)) {
+            // Save user location in the database
+            $qrCodeModel->user_location = json_encode([
+                'ip' => $userLocation->ip,
+                'country' => $userLocation->countryName,
+                'city' => $userLocation->cityName,
+                'latitude' => $userLocation->latitude,
+                'longitude' => $userLocation->longitude,
+            ]);
+            $qrCodeModel->save();
+        }
+
+        // Return a JSON response with the user's location and original link
+        return response()->json([
+            'original_link' => $qrCodeModel->link,
+            'scans_count' => $qrCodeModel->scans_count,
+            'user_location' => $userLocation ? [
+                'ip' => $userLocation->ip,
+                'country' => $userLocation->countryName,
+                'city' => $userLocation->cityName,
+                'latitude' => $userLocation->latitude,
+                'longitude' => $userLocation->longitude,
+            ] : null
+        ]);
     }
 
 }
