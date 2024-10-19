@@ -8,5 +8,5 @@ class QrCodeModel extends Model
 {
     protected $table = 'qr_codes';
 
-    protected $fillable = ['link', 'qr_code_path'];
+    protected $fillable = ['link', 'qr_code_path','scans_count'];
 }
