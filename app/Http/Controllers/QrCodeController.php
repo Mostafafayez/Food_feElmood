@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\QrCodeModel;
 use Stevebauman\Location\Facades\Location;
 use Illuminate\Support\Facades\Log;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\Facades\Image; // Ensure this is imported
+
+
 class QrCodeController extends Controller
 {
     public function generateQrCode(Request $request)
