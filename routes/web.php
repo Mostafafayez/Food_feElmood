@@ -16,3 +16,9 @@ Route::post('/generate-qrcode', [QrCodeController::class, 'generateQrCode'])->na
 Route::get('/qrcode-form', function () {
     return view('qrcode.form');
 });
+
+
+
+// web.php (routes file)
+
+Route::get('/scan/{id}', [QrCodeController::class, 'trackScan'])->name('qrcode.scan');
