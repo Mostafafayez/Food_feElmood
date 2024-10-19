@@ -263,9 +263,27 @@ class Generator
      * @param null|int $alpha
      * @return Generator
      */
-    public function color(int $red, int $green, int $blue, ?int $alpha = null): self
+    // public function color(int $red, int $green, int $blue, ?int $alpha = null): self
+    // {
+    //     $this->color = $this->createColor($red, $green, $blue, $alpha);
+
+    //     return $this;
+    // }
+    public function color($color)
     {
-        $this->color = $this->createColor($red, $green, $blue, $alpha);
+        if (strpos($color, '#') === 0) {
+            $hex = substr($color, 1);
+            if (strlen($hex) === 6) {
+                $this->foregroundColor = [
+                    hexdec(substr($hex, 0, 2)),
+                    hexdec(substr($hex, 2, 2)),
+                    hexdec(substr($hex, 4, 2)),
+                ];
+            }
+        } else {
+            // Existing logic for RGB values
+            $this->foregroundColor = func_get_args();
+        }
 
         return $this;
     }
