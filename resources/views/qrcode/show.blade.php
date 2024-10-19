@@ -30,7 +30,7 @@
         }
         .download-btn {
             padding: 10px 20px;
-            background-color:  yellow; /* Green background */
+            background-color:  #073763;
           color: white;
 
             border: none;
@@ -40,7 +40,7 @@
             cursor: pointer;
         }
         .download-btn:hover {
-            background-color: #45a049;
+            background-color: yellow;
         }
     </style>
 </head>
