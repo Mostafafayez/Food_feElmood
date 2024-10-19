@@ -11,14 +11,13 @@ return [
     |
     */
 
-    'driver' => env('LOCATION_DRIVER', 'ipstack'), // Set it to 'ipstack'
+    'driver' => env('LOCATION_DRIVER', 'ipapi'),
 
     'drivers' => [
-        'ipstack' => [
-            'class' => Stevebauman\Location\Drivers\IpApi::class, // Use IpApi if IPStack is not available
-            'key' => env('IPSTACK_API_KEY'), // Your IPStack API key
+        'ipapi' => [
+            'class' => Stevebauman\Location\Drivers\IpApi::class, // Use the IpApi driver
+            'key' => env('IPAPI_API_KEY'), // Your IPAPI API key, if needed
         ],
-        // Other drivers...
     ],
     /*
     |--------------------------------------------------------------------------
