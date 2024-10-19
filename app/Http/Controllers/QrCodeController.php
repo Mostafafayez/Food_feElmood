@@ -69,12 +69,12 @@ class QrCodeController extends Controller
         if ($userLocation) {
             // Log or save user location details as needed
             // Check if userLocation is an object and has the expected properties
-            if (isset($userLocation->ip) && isset($userLocation->countryName) ) {
+            if (isset($userLocation->ip) && isset($userLocation->countryName) && isset($userLocation->cityName)) {
                 // Saving the location data in the database
                 $qrCodeModel->user_location = json_encode([
                     'ip' => $userLocation->ip,
                     'country' => $userLocation->countryName,
-                    // 'city' => $userLocation->city,
+                    'city' => $userLocation->cityName,
                     'latitude' => $userLocation->latitude,
                     'longitude' => $userLocation->longitude,
                 ]);
