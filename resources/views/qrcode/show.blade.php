@@ -18,10 +18,15 @@
             height: 300px;
             margin-bottom: 20px;
         }
+        .logo-container {
+            position: absolute; /* Use absolute positioning */
+            top: 20px; /* Distance from the top */
+            left: 20px; /* Distance from the left */
+        }
         .logo {
             width: 100px; /* Adjust the size as needed */
             height: auto; /* Maintain aspect ratio */
-            margin-bottom: 20px;
+            /* margin-bottom: 20px; */
         }
         .download-btn {
             padding: 10px 20px;
