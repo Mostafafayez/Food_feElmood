@@ -43,7 +43,7 @@
 
     <!-- Logo Section -->
     <div class="logo-container">
-        <img src="{{ asset('qrcodes/logo.png') }}" alt="Logo" class="logo">
+        <img src="{{ asset('storage/qrcodes/logo.png') }}" alt="Logo" class="logo">
     </div>
 
     <!-- QR Code Section -->
