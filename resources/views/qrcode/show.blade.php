@@ -30,8 +30,9 @@
         }
         .download-btn {
             padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
+            background-color:  #073763; /* Green background */
+          
+
             border: none;
             border-radius: 5px;
             text-decoration: none;
