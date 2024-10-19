@@ -46,9 +46,43 @@ class VisitorActionController extends Controller
             ->where('restaurant_id', $id)  // Add condition to filter by id
             ->groupBy('action')
             ->get();
-    
+
         return response()->json(['data' => $actionCounts], 200);
     }
-    
+
+
+    public function getHomepageActions()
+    {
+        // Fetch actions where restaurant_id is null and group by action
+        $actions = VisitorAction::select('action', \DB::raw('count(*) as count'))
+            ->whereNull('restaurant_id')
+            ->groupBy('action')
+            ->get();
+
+        return response()->json($actions);
+    }
+
+
+
+    public function getVisitorCount()
+    {
+        // Count visitors grouped by ip_address and restaurant_id
+        $visitorCounts = VisitorAction::select('restaurant_id', 'ip_address', \DB::raw('count(*) as count'))
+            ->groupBy('restaurant_id', 'ip_address')
+            ->get();
+
+        return response()->json($visitorCounts);
+    }
+
+
+    public function getUniqueVisitorCount()
+    {
+        // Count unique visitors grouped by restaurant_id
+        $visitorCounts = VisitorAction::select('restaurant_id', \DB::raw('count(distinct ip_address) as unique_visitors'))
+            ->groupBy('restaurant_id')
+            ->get();
+
+        return response()->json($visitorCounts);
+    }
 
 }

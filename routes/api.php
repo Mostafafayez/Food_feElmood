@@ -119,6 +119,10 @@ Route::get('/blogs/{id}', [BlogController::class, 'show']);
 Route::get('/food_type', [FoodTypeController::class, 'index']);
 
 
+//dashboard for admin
+Route::get('/actions/homepage', [VisitorActionController::class, 'getHomepageActions']);
+Route::get('/actions/visitor-count', [VisitorActionController::class, 'getVisitorCount']);
+Route::get('/actions/visitor-count/total', [VisitorActionController::class, 'getUniqueVisitorCount']);
 
 
 
