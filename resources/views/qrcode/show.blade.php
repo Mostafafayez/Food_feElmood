@@ -18,6 +18,11 @@
             height: 300px;
             margin-bottom: 20px;
         }
+        .logo {
+            width: 100px; /* Adjust the size as needed */
+            height: auto; /* Maintain aspect ratio */
+            margin-bottom: 20px;
+        }
         .download-btn {
             padding: 10px 20px;
             background-color: #4CAF50;
@@ -35,9 +40,17 @@
 </head>
 <body>
     <h1>Generated QR Code</h1>
+
+    <!-- Logo Section -->
+    <div class="logo-container">
+        <img src="{{ asset('qrcodes/logo.png') }}" alt="Logo" class="logo">
+    </div>
+
+    <!-- QR Code Section -->
     <div class="qr-container">
         <img src="{{ asset($qr_code_url) }}" alt="QR Code">
     </div>
+
     <a href="{{ asset($qr_code_url) }}" class="download-btn" download="qrcode.png">Download QR Code</a>
 </body>
 </html>
