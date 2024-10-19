@@ -29,8 +29,8 @@ class QrCodeController extends Controller
         $trackingLink = route('qrcode.scan', ['id' => $qrCodeModel->id]);
 
         $qrCode = QrCode::format('png')
-            ->size(300)
-            ->color(255, 0, 0) // RGB for red
+            ->size(200)
+            ->color(0, 0, 0) // RGB for red
             ->generate($trackingLink);
 
         // Save the QR code image in the storage (public folder)
