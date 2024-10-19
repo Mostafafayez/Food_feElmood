@@ -39,9 +39,9 @@
             font-size: 16px;
             cursor: pointer;
         }
-        .download-btn:hover {
+        /* .download-btn:hover {
             background-color: yellow;
-        }
+        } */
     </style>
 </head>
 <body>
