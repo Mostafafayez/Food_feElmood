@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
 use App\Models\QrCodeModel;
-
+use Stevebauman\Location\Facades\Location;
 
 class QrCodeController extends Controller
 {
@@ -48,17 +48,35 @@ class QrCodeController extends Controller
 
 
 
-    public function trackScan($id)
-{
-    // Find the QR code by its ID
-    $qrCodeModel = QrCodeModel::findOrFail($id);
 
-    // Increment the scan count
-    $qrCodeModel->scans_count = $qrCodeModel->scans_count + 1;
-    $qrCodeModel->save();
+    public function trackScan($id, Request $request)
+    {
+        // Find the QR code by its ID
+        $qrCodeModel = QrCodeModel::findOrFail($id);
 
-    // Redirect the user to the original link
-    return redirect($qrCodeModel->link);
-}
+        // Get the user's location based on their IP address
+        $userLocation = Location::get($request->ip());
+
+        // Increment the scan count
+        $qrCodeModel->scans_count = $qrCodeModel->scans_count + 1;
+        $qrCodeModel->save();
+
+        // Optionally: Save the location data if needed
+        if ($userLocation) {
+            // Log or save user location details as needed
+            // For example, saving the location data in the database
+            $qrCodeModel->user_location = json_encode([
+                'ip' => $userLocation->ip,
+                'country' => $userLocation->countryName,
+                'city' => $userLocation->cityName,
+                'latitude' => $userLocation->latitude,
+                'longitude' => $userLocation->longitude,
+            ]);
+            $qrCodeModel->save();
+        }
+
+        // Redirect the user to the original link
+        return redirect($qrCodeModel->link);
+    }
 
 }
