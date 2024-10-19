@@ -11,14 +11,8 @@ return [
     |
     */
 
-    'driver' => env('LOCATION_DRIVER', 'ipapi'),
+    'driver' => Stevebauman\Location\Drivers\IpApi::class,
 
-    'drivers' => [
-        'ipapi' => [
-            'class' => Stevebauman\Location\Drivers\IpApi::class, // Use the IpApi driver
-            'key' => env('IPAPI_API_KEY'), // Your IPAPI API key, if needed
-        ],
-    ],
     /*
     |--------------------------------------------------------------------------
     | Driver Fallbacks

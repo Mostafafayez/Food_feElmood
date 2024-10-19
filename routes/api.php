@@ -95,7 +95,7 @@ Route::get('/link', function () {
 Route::get('/cache/clear', function () {
     try {
         // Clear the application cache
-        Artisan::call('cache:clear');
+        Artisan::call('cache:config');
 
         return response()->json(['message' => 'Cache cleared successfully.'], 200);
     } catch (\Exception $e) {
