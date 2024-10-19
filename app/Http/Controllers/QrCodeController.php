@@ -56,7 +56,7 @@ class QrCodeController extends Controller
 
         // Get the user's location based on their IP address
         $userLocation = Location::get($request->ip());
-        Log::info('User Location Data:', (array) $userLocation);
+       
         // Increment the scan count
         $qrCodeModel->scans_count += 1; // Simplified increment
         $qrCodeModel->save();
@@ -80,6 +80,17 @@ class QrCodeController extends Controller
                 ]);
                 $qrCodeModel->save();
             }
+
+            Log::info('User Location to be saved:', [
+                'user_location' => json_encode([
+                    'ip' => $userLocation->ip,
+                    'country' => $userLocation->countryName,
+                    'city' => $userLocation->cityName,
+                    'latitude' => $userLocation->latitude,
+                    'longitude' => $userLocation->longitude,
+                ]),
+            ]);
+
         }
 
         // Redirect the user to the original link
