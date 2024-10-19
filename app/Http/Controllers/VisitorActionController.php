@@ -78,7 +78,7 @@ class VisitorActionController extends Controller
     public function getUniqueVisitorCount()
     {
         // Count unique visitors grouped by restaurant_id
-        $visitorCounts = VisitorAction::select('restaurant_id', \DB::raw('count(distinct ip_address) as unique_visitors'))
+        $visitorCounts = VisitorAction::select('restaurant_id',\DB::raw('count(*) as total_visitors'))
             ->groupBy('restaurant_id')
             ->get();
 
