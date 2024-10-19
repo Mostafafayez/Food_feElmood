@@ -7,6 +7,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
 use App\Models\QrCodeModel;
 use Stevebauman\Location\Facades\Location;
+use Illuminate\Support\Facades\Log;
 
 class QrCodeController extends Controller
 {
@@ -55,10 +56,14 @@ class QrCodeController extends Controller
 
         // Get the user's location based on their IP address
         $userLocation = Location::get($request->ip());
-
+        Log::info('User Location Data:', (array) $userLocation);
         // Increment the scan count
         $qrCodeModel->scans_count += 1; // Simplified increment
         $qrCodeModel->save();
+
+
+
+
 
         // Optionally: Save the location data if needed
         if ($userLocation) {
