@@ -89,6 +89,23 @@ Route::get('/link', function () {
     }
 });
 
+
+
+
+Route::get('/cache/clear', function () {
+    try {
+        // Clear the application cache
+        Artisan::call('cache:clear');
+
+        return response()->json(['message' => 'Cache cleared successfully.'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Failed to clear cache', 'error' => $e->getMessage()], 500);
+    }
+});
+
+
+
+
 Route::post('/addrestaurant_info', [RestaurantController::class,'store']);
 /////////comment  searc
 
@@ -105,7 +122,7 @@ Route::get('/food_type', [FoodTypeController::class, 'index']);
 
 
 
-///////qr code 
+///////qr code
 
 
 
