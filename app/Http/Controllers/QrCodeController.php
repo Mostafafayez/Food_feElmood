@@ -30,7 +30,7 @@ class QrCodeController extends Controller
         $trackingLink = route('qrcode.scan', ['id' => $qrCodeModel->id]);
 
         $qrCode = QrCode::format('png')
-          ->backgroundColor(255, 255, 255)
+            ->backgroundColor(255, 255, 255)
             ->size(200)
             ->color(0, 0, 0) // RGB for red
             ->generate($trackingLink);
@@ -52,7 +52,7 @@ class QrCodeController extends Controller
     {
         // Validate incoming data
         $validatedData = $request->validate([
-            'link' => 'required|url', // Ensure the input is a valid URL
+            'link' => 'required', // Ensure the input is a valid URL
         ]);
 
         $link = $validatedData['link'];
@@ -131,7 +131,6 @@ class QrCodeController extends Controller
                     'longitude' => $userLocation->longitude,
                 ]),
             ]);
-
         }
 
         // Redirect the user to the original link
@@ -179,5 +178,4 @@ class QrCodeController extends Controller
             ] : null
         ]);
     }
-
 }
