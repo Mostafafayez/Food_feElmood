@@ -70,6 +70,8 @@ class QrCodeController extends Controller
             ->backgroundColor(255, 255, 255)
             ->size(200)
             ->color(0, 0, 0)
+            ->style('dot')                   // Change pattern to dots
+            ->eye('circle')  
             ->generate($trackingLink);
 
         // Save the QR code image in the storage (public folder)
