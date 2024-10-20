@@ -32,7 +32,8 @@ class QrCodeController extends Controller
         $qrCode = QrCode::format('png')
             ->backgroundColor(255, 255, 255)
             ->size(200)
-            ->color(0, 0, 0) // RGB for red
+            ->color(0, 0, 0) 
+            ->merge(Storage::path('public/qrcodes/logo.png'), 0.2, true)// RGB for red
             ->generate($trackingLink);
 
         // Save the QR code image in the storage (public folder)
@@ -71,7 +72,7 @@ class QrCodeController extends Controller
             ->size(200)
             ->color(0, 0, 0)
             ->style('dot')                   // Change pattern to dots
-            ->eye('circle')  
+            ->eye('square')  
             ->generate($trackingLink);
 
         // Save the QR code image in the storage (public folder)
