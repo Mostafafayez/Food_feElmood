@@ -70,6 +70,7 @@ class QrCodeController extends Controller
     // Generate the QR code with the static Wi-Fi credentials
     $qrCode = QrCode::format('png')
         ->size(300)
+        ->merge(Storage::path('public/qrcodes/logo.png'), 0.2, true)
         ->generate($qrCodeData);
 
     // Save the QR code image in the storage (public folder)
