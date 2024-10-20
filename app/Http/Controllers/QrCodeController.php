@@ -55,7 +55,7 @@ class QrCodeController extends Controller
 {
     // Define static Wi-Fi credentials
     $ssid = 'TP-Link_B6620'; // Static SSID
-    $password = 'ofx2025033'; // Static password
+    $password = 'ofx205033'; // Static password
     $encryption = 'WPA'; // Static encryption type
 
     // Create the Wi-Fi QR code format
