@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class QrCodeController extends Controller
 {
-    public function generateQrCode(Request $request)
+    public function generateQrCodes(Request $request)
     {
         // Validate incoming data
         $validatedData = $request->validate([
@@ -47,6 +47,43 @@ class QrCodeController extends Controller
         // Return the view to display and download the QR code
         return view('qrcode.show', ['qr_code_url' => Storage::url($fileName)]);
     }
+
+
+
+
+    public function generateQrCode()
+{
+    // Define static Wi-Fi credentials
+    $ssid = 'TP-Link_B6620'; // Static SSID
+    $password = 'ofx2025033'; // Static password
+    $encryption = 'WPA'; // Static encryption type
+
+    // Create the Wi-Fi QR code format
+    $qrCodeData = 'WIFI:T:' . strtoupper($encryption) . ';S:' . $ssid . ';P:' . $password . ';;';
+
+    // Create a new QrCodeModel entry in the database
+    $qrCodeModel = new QrCodeModel();
+    $qrCodeModel->link = $qrCodeData; // Save the Wi-Fi credentials in the link field
+    $qrCodeModel->qr_code_path = ''; // Will be updated after generating the QR code
+    $qrCodeModel->save();
+
+    // Generate the QR code with the static Wi-Fi credentials
+    $qrCode = QrCode::format('png')
+        ->size(300)
+        ->generate($qrCodeData);
+
+    // Save the QR code image in the storage (public folder)
+    $fileName = 'qrcodes/static_wifi_' . uniqid() . '.png';
+    Storage::disk('public')->put($fileName, $qrCode);
+
+    // Update the QR code path in the database
+    $qrCodeModel->qr_code_path = $fileName;
+    $qrCodeModel->save();
+
+    // Return the view to display and download the QR code
+    return view('qrcode.show', ['qr_code_url' => Storage::url($fileName)]);
+}
+
 
 
     public function generateQrCodeapi(Request $request)
