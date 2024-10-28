@@ -52,15 +52,15 @@ class QrCodeController extends Controller
     {
         // Validate incoming data
         $validatedData = $request->validate([
-            'link' => 'required|url', // Ensure the input is a valid URL
+            'link' => 'required|url',
         ]);
 
         $link = $validatedData['link'];
 
-        // Create a new QrCodeModel and save the link
+
         $qrCodeModel = new QrCodeModel();
         $qrCodeModel->link = $link;
-        $qrCodeModel->qr_code_path = ''; // Temporarily empty, will be updated later
+        $qrCodeModel->qr_code_path = '';
         $qrCodeModel->save();
 
         // Generate the QR code with the tracking route using the saved model's ID
@@ -72,11 +72,11 @@ class QrCodeController extends Controller
             ->color(0, 0, 0)
             ->generate($trackingLink);
 
-        // Save the QR code image in the storage (public folder)
+
         $fileName = 'qrcodes/' . uniqid() . '.png';
         Storage::disk('public')->put($fileName, $qrCode);
 
-        // Update the qr_code_path in the model
+
         $qrCodeModel->qr_code_path = $fileName;
         $qrCodeModel->save();
 
@@ -104,7 +104,7 @@ class QrCodeController extends Controller
 
 
 
-
+        $userLocation = Location::get($request->ip());
 
         // Optionally: Save the location data if needed
         if ($userLocation) {
@@ -155,7 +155,7 @@ class QrCodeController extends Controller
 
         // Optionally: Save the location data if needed
         if ($userLocation && isset($userLocation->ip, $userLocation->countryName, $userLocation->cityName)) {
-            // Save user location in the database
+
             $qrCodeModel->user_location = json_encode([
                 'ip' => $userLocation->ip,
                 'country' => $userLocation->countryName,
