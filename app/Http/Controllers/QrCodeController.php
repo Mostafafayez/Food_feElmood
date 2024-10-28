@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class QrCodeController extends Controller
 {
-    public function generateQrCode(Request $request)
+    public function generateQrCodes(Request $request)
     {
         // Validate incoming data
         $validatedData = $request->validate([
@@ -30,9 +30,10 @@ class QrCodeController extends Controller
         $trackingLink = route('qrcode.scan', ['id' => $qrCodeModel->id]);
 
         $qrCode = QrCode::format('png')
-          ->backgroundColor(255, 255, 255)
+            ->backgroundColor(255, 255, 255)
             ->size(200)
-            ->color(0, 0, 0) // RGB for red
+            ->color(0, 0, 0)
+            ->merge(Storage::path('public/qrcodes/logo.png'), 0.2, true)// RGB for red
             ->generate($trackingLink);
 
         // Save the QR code image in the storage (public folder)
@@ -48,11 +49,53 @@ class QrCodeController extends Controller
     }
 
 
+
+
+    public function generateQrCode()
+{
+    // Define static Wi-Fi credentials
+    $ssid = 'TP-Link_B6620'; // Static SSID
+    $password = 'ofx205033'; // Static password
+    $encryption = 'WPA'; // Static encryption type
+
+    // Create the Wi-Fi QR code format
+    $qrCodeData = 'WIFI:T:' . strtoupper($encryption) . ';S:' . $ssid . ';P:' . $password . ';;';
+
+    // Create a new QrCodeModel entry in the database
+    $qrCodeModel = new QrCodeModel();
+    $qrCodeModel->link = $qrCodeData; // Save the Wi-Fi credentials in the link field
+    $qrCodeModel->qr_code_path = ''; // Will be updated after generating the QR code
+    $qrCodeModel->save();
+
+    // Generate the QR code with the static Wi-Fi credentials
+    $qrCode = QrCode::format('png')
+        ->size(300)
+        ->merge(Storage::path('public/qrcodes/logo.png'), 0.2, true)
+        ->generate($qrCodeData);
+
+    // Save the QR code image in the storage (public folder)
+    $fileName = 'qrcodes/static_wifi_' . uniqid() . '.png';
+    Storage::disk('public')->put($fileName, $qrCode);
+
+    // Update the QR code path in the database
+    $qrCodeModel->qr_code_path = $fileName;
+    $qrCodeModel->save();
+
+    // Return the view to display and download the QR code
+    return view('qrcode.show', ['qr_code_url' => Storage::url($fileName)]);
+}
+
+
+
     public function generateQrCodeapi(Request $request)
     {
         // Validate incoming data
         $validatedData = $request->validate([
+
             'link' => 'required|url',
+
+          
+
         ]);
 
         $link = $validatedData['link'];
@@ -70,6 +113,8 @@ class QrCodeController extends Controller
             ->backgroundColor(255, 255, 255)
             ->size(200)
             ->color(0, 0, 0)
+            ->style('dot')                   // Change pattern to dots
+            ->eye('square')
             ->generate($trackingLink);
 
 
@@ -131,7 +176,6 @@ class QrCodeController extends Controller
                     'longitude' => $userLocation->longitude,
                 ]),
             ]);
-
         }
 
         // Redirect the user to the original link
@@ -179,5 +223,4 @@ class QrCodeController extends Controller
             ] : null
         ]);
     }
-
 }
