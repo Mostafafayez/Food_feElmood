@@ -32,7 +32,7 @@ class QrCodeController extends Controller
         $qrCode = QrCode::format('png')
             ->backgroundColor(255, 255, 255)
             ->size(200)
-            ->color(0, 0, 0) 
+            ->color(0, 0, 0)
             ->merge(Storage::path('public/qrcodes/logo.png'), 0.2, true)// RGB for red
             ->generate($trackingLink);
 
@@ -91,15 +91,19 @@ class QrCodeController extends Controller
     {
         // Validate incoming data
         $validatedData = $request->validate([
-            'link' => 'required', // Ensure the input is a valid URL
+
+            'link' => 'required|url',
+
+          
+
         ]);
 
         $link = $validatedData['link'];
 
-        // Create a new QrCodeModel and save the link
+
         $qrCodeModel = new QrCodeModel();
         $qrCodeModel->link = $link;
-        $qrCodeModel->qr_code_path = ''; // Temporarily empty, will be updated later
+        $qrCodeModel->qr_code_path = '';
         $qrCodeModel->save();
 
         // Generate the QR code with the tracking route using the saved model's ID
@@ -110,14 +114,14 @@ class QrCodeController extends Controller
             ->size(200)
             ->color(0, 0, 0)
             ->style('dot')                   // Change pattern to dots
-            ->eye('square')  
+            ->eye('square')
             ->generate($trackingLink);
 
-        // Save the QR code image in the storage (public folder)
+
         $fileName = 'qrcodes/' . uniqid() . '.png';
         Storage::disk('public')->put($fileName, $qrCode);
 
-        // Update the qr_code_path in the model
+
         $qrCodeModel->qr_code_path = $fileName;
         $qrCodeModel->save();
 
@@ -145,7 +149,7 @@ class QrCodeController extends Controller
 
 
 
-
+        $userLocation = Location::get($request->ip());
 
         // Optionally: Save the location data if needed
         if ($userLocation) {
@@ -195,7 +199,7 @@ class QrCodeController extends Controller
 
         // Optionally: Save the location data if needed
         if ($userLocation && isset($userLocation->ip, $userLocation->countryName, $userLocation->cityName)) {
-            // Save user location in the database
+
             $qrCodeModel->user_location = json_encode([
                 'ip' => $userLocation->ip,
                 'country' => $userLocation->countryName,

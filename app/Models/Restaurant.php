@@ -10,6 +10,12 @@ class Restaurant extends Model
 {
     use HasFactory;
     public $timestamps = false;
+
+    protected $casts = [
+        'area' => 'array',
+        'area_ar'=> 'array'
+    ];
+
     protected $fillable = ['name','name_ar', 'main_image','thumbnail_image', 'review', 'review_ar','location', 'location_ar','area','area_ar','status','route','route_ar','value','cost','food_id'];
 
 

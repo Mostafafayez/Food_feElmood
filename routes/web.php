@@ -19,6 +19,4 @@ Route::get('/qrcode-form', function () {
 
 
 
-// web.php (routes file)
-
 Route::get('/scan/{id}', [QrCodeController::class, 'trackScan'])->name('qrcode.scan');
