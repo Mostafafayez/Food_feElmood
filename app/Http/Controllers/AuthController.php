@@ -21,7 +21,7 @@ class AuthController extends Controller
         ]);
 
         // Log only non-sensitive information (remove in production)
-        Log::info('Validated User Name:', ['name' => $validated['name'],'password' => $validated['password']]);
+        Log::info('Validated User Name:', ['name' => $validated['name'], 'password' => $validated['password']]);
 
         // Create user with hashed password
         $user = Users::create([
@@ -43,33 +43,33 @@ class AuthController extends Controller
     // User Loginuse Illuminate\Support\Facades\Auth;
 
 
-public function login(Request $request)
-{
-    // Validate request
-    $validated = $request->validate([
-        'email' => 'required|string|email',
-        'password' => 'required|string',
-    ]);
+    public function login(Request $request)
+    {
+        // Validate request
+        $validated = $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
 
-    // Attempt to authenticate
-    if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
-        // Get authenticated user
-        $user = Auth::user();
-        Log::info('Validated User Data:', $validated);
-        // Generate token
-        $token = $user->createToken('personalAccessToken')->plainTextToken;
-        // Log::info('Validated User Data:', $token);
-        return response()->json([
-            'message' => 'Login successful',
-            'token' => $token,
-        ], 200);
-    } else {
-        // If authentication fails
-        return response()->json([
-            'message' => 'Invalid email or password',
-        ], 401);
+        // Attempt to authenticate
+        if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
+            // Get authenticated user
+            $user = Auth::user();
+            Log::info('Validated User Data:', $validated);
+            // Generate token
+            $token = $user->createToken('personalAccessToken')->plainTextToken;
+            // Log::info('Validated User Data:', $token);
+            return response()->json([
+                'message' => 'Login successful',
+                'token' => $token,
+            ], 200);
+        } else {
+            // If authentication fails
+            return response()->json([
+                'message' => 'Invalid email or password',
+            ], 401);
+        }
     }
-}
 
     // Update Password
     public function updatePassword(Request $request, $user_id)
@@ -94,7 +94,4 @@ public function login(Request $request)
 
         return response()->json(['message' => 'Password updated successfully'], 200);
     }
-
-
-
 }
