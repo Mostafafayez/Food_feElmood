@@ -57,6 +57,6 @@
         <img src="{{ asset($qr_code_url) }}" alt="QR Code">
     </div>
 
-    <a href="{{ asset($qr_code_url) }}" class="download-btn" download="qrcode.pdf">Download QR Code</a>
+    <a href="{{ asset($qr_code_url) }}" class="download-btn" download="qrcode.png">Download QR Code</a>
 </body>
 </html>
